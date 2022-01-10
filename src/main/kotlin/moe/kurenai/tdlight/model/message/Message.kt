@@ -79,4 +79,12 @@ data class Message(
             }
         }
     }
+
+    fun hasAnimation() = animation != null
+    fun hasDocument() = document != null
+    fun hasVideo() = video != null
+    fun hasVoice() = voice != null
+    fun hasPhoto() = photo != null
+    fun hasSticker() = sticker != null
+    fun hasReplyMarkup() = replyMarkup != null
 }
