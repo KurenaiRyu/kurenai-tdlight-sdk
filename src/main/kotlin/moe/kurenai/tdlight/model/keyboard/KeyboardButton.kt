@@ -1,13 +1,19 @@
-package moe.kurenai.tdlight.model.keyboard;
+package moe.kurenai.tdlight.model.keyboard
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.Optional;
+data class KeyboardButton(
 
-public record KeyboardButton(
-        @JsonProperty("text") String text,
-        @JsonProperty("request_contact") Optional<Boolean> requestContact,
-        @JsonProperty("request_location") Optional<Boolean> requestLocation,
-        @JsonProperty("request_poll") Optional<KeyboardButtonPollType> requestPoll
+    @JsonProperty("text")
+    var text: String,
+
+    @JsonProperty("request_contact")
+    var requestContact: Boolean? = null,
+
+    @JsonProperty("request_location")
+    var requestLocation: Boolean? = null,
+
+    @JsonProperty("request_poll")
+    var requestPoll: KeyboardButtonPollType? = null,
 ) {
 }

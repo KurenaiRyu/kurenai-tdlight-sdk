@@ -1,26 +1,6 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+enum class DiceEmoji(val emoji: String) {
+    GAME_DIE("🎲"), DIRECT_HIT("🎯"), BASKETBALL("🏀"), SOCCER_BALL("⚽"), BOWLING("🎳");
 
-public enum DiceEmoji {
-    @JsonProperty("🎲")
-    GAME_DIE("🎲"),
-    @JsonProperty("🎯")
-    DIRECT_HIT("🎯"),
-    @JsonProperty("🏀")
-    BASKETBALL("🏀"),
-    @JsonProperty("⚽")
-    SOCCER_BALL("⚽"),
-    @JsonProperty("🎳")
-    BOWLING("🎳");
-
-    public final String emoji;
-
-    DiceEmoji(String emoji) {
-        this.emoji = emoji;
-    }
-
-    public String getEmoji() {
-        return emoji;
-    }
 }

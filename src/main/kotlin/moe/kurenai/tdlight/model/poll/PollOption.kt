@@ -1,9 +1,13 @@
-package moe.kurenai.tdlight.model.poll;
+package moe.kurenai.tdlight.model.poll
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public record PollOption(
-        @JsonProperty("text") String text,
-        @JsonProperty("voter_count") int voterCount
+data class PollOption(
+
+    @JsonProperty("text")
+    val text: String,
+
+    @JsonProperty("voter_count")
+    val voterCount: Int = 0,
 ) {
 }

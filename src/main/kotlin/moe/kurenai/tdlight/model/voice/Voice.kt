@@ -1,15 +1,24 @@
-package moe.kurenai.tdlight.model.voice;
+package moe.kurenai.tdlight.model.voice
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
+import java.util.OptionalInt
 
-import java.util.Optional;
-import java.util.OptionalInt;
+data class Voice(
 
-public record Voice(
-        @JsonProperty("file_id") String fileId,
-        @JsonProperty("file_unique_id") String fileUniqueId,
-        @JsonProperty("duration") int duration,
-        @JsonProperty("mime_type") Optional<String> mimeType,
-        @JsonProperty("file_size") OptionalInt fileSize
+    @JsonProperty("file_id")
+    val fileId: String,
+
+    @JsonProperty("file_unique_id")
+    val fileUniqueId: String,
+
+    @JsonProperty("duration")
+    val duration: Long = 0,
+
+    @JsonProperty("mime_type")
+    val mimeType: String? = null,
+
+    @JsonProperty("file_size")
+    val fileSize: Int? = null,
 ) {
 }

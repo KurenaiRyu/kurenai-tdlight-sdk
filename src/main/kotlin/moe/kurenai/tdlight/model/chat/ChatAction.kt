@@ -1,28 +1,5 @@
-package moe.kurenai.tdlight.model.chat;
+package moe.kurenai.tdlight.model.chat
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public enum ChatAction {
-    @JsonProperty("typing")
-    TYPING,
-    @JsonProperty("upload_photo")
-    UPLOAD_PHOTO,
-    @JsonProperty("record_video")
-    RECORD_VIDEO,
-    @JsonProperty("upload_video")
-    UPLOAD_VIDEO,
-    @JsonProperty("record_voice")
-    RECORD_VOICE,
-    @JsonProperty("upload_voice")
-    UPLOAD_VOICE,
-    @JsonProperty("upload_document")
-    UPLOAD_DOCUMENT,
-    @JsonProperty("find_location")
-    FIND_LOCATION,
-    @JsonProperty("record_video_note")
-    RECORD_VIDEO_NOTE,
-    @JsonProperty("upload_video_note")
-    UPLOAD_VIDEO_NOTE,
-    @JsonProperty("choose_sticker")
-    CHOOSE_STICKER
+enum class ChatAction {
+    TYPING, UPLOAD_PHOTO, RECORD_VIDEO, UPLOAD_VIDEO, RECORD_VOICE, UPLOAD_VOICE, UPLOAD_DOCUMENT, FIND_LOCATION, RECORD_VIDEO_NOTE, UPLOAD_VIDEO_NOTE, CHOOSE_STICKER
 }

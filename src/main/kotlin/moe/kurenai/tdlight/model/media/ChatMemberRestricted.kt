@@ -1,21 +1,46 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import moe.kurenai.tdlight.model.chat.ChatMember;
-import moe.kurenai.tdlight.model.message.User;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
+import moe.kurenai.tdlight.model.media.PhotoSize
+import java.util.OptionalInt
+import moe.kurenai.tdlight.model.chat.ChatMember
+import moe.kurenai.tdlight.model.message.User
 
-public record ChatMemberRestricted(
-        @JsonProperty("status") String status,
-        @JsonProperty("user") User user,
-        @JsonProperty("is_member") boolean isMember,
-        @JsonProperty("can_change_info") boolean canChangeInfo,
-        @JsonProperty("can_invite_users") boolean canInviteUsers,
-        @JsonProperty("can_pin_messages") boolean canPinMessages,
-        @JsonProperty("can_send_messages") boolean canSendMessages,
-        @JsonProperty("can_send_media_messages") boolean canSendMediaMessages,
-        @JsonProperty("can_send_polls") boolean canSendPolls,
-        @JsonProperty("can_send_other_messages") boolean canSendOtherMessages,
-        @JsonProperty("can_add_web_page_previews") boolean canAddWebPagePreviews,
-        @JsonProperty("until_date") long untilDate
-) implements ChatMember {
+class ChatMemberRestricted : ChatMember {
+    @JsonProperty("status")
+    var status: String? = null
+
+    @JsonProperty("user")
+    var user: User? = null
+
+    @JsonProperty("is_member")
+    var isMember = false
+
+    @JsonProperty("can_change_info")
+    var canChangeInfo = false
+
+    @JsonProperty("can_invite_users")
+    var canInviteUsers = false
+
+    @JsonProperty("can_pin_messages")
+    var canPinMessages = false
+
+    @JsonProperty("can_send_messages")
+    var canSendMessages = false
+
+    @JsonProperty("can_send_media_messages")
+    var canSendMediaMessages = false
+
+    @JsonProperty("can_send_polls")
+    var canSendPolls = false
+
+    @JsonProperty("can_send_other_messages")
+    var canSendOtherMessages = false
+
+    @JsonProperty("can_add_web_page_previews")
+    var canAddWebPagePreviews = false
+
+    @JsonProperty("until_date")
+    var untilDate: Long = 0
 }

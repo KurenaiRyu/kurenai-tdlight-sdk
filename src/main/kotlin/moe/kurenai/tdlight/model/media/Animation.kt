@@ -1,19 +1,37 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
+import moe.kurenai.tdlight.model.media.PhotoSize
+import java.util.OptionalInt
 
-import java.util.Optional;
-import java.util.OptionalInt;
+data class Animation(
 
-public record Animation(
-        @JsonProperty("file_id") String file_id,
-        @JsonProperty("file_unique_id") String fileUniqueId,
-        @JsonProperty("width") int width,
-        @JsonProperty("height") int height,
-        @JsonProperty("duration") int duration,
-        @JsonProperty("thumb") Optional<PhotoSize> thumb,
-        @JsonProperty("file_name") Optional<String> fileName,
-        @JsonProperty("mime_type") Optional<String> mimeType,
-        @JsonProperty("file_size") OptionalInt fileSize
+    @JsonProperty("file_id")
+    val file_id: String,
+
+    @JsonProperty("file_unique_id")
+    val fileUniqueId: String,
+
+    @JsonProperty("width")
+    val width: Int = 0,
+
+    @JsonProperty("height")
+    val height: Int = 0,
+
+    @JsonProperty("duration")
+    val duration: Long = 0,
+
+    @JsonProperty("thumb")
+    val thumb: PhotoSize? = null,
+
+    @JsonProperty("file_name")
+    val fileName: String? = null,
+
+    @JsonProperty("mime_type")
+    val mimeType: String? = null,
+
+    @JsonProperty("file_size")
+    val fileSize: Int? = null,
 ) {
 }

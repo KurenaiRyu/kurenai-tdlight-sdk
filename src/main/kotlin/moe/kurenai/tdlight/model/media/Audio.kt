@@ -1,19 +1,37 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
+import java.util.OptionalInt
+import moe.kurenai.tdlight.model.media.PhotoSize
 
-import java.util.Optional;
-import java.util.OptionalInt;
+data class Audio(
 
-public record Audio(
-        @JsonProperty("file_id") String file_id,
-        @JsonProperty("file_unique_id") String fileUniqueId,
-        @JsonProperty("duration") int duration,
-        @JsonProperty("performer") Optional<String> performer,
-        @JsonProperty("title") Optional<String> title,
-        @JsonProperty("file_name") Optional<String> fileName,
-        @JsonProperty("mime_type") Optional<String> mimeType,
-        @JsonProperty("file_size") OptionalInt fileSize,
-        @JsonProperty("thumb") Optional<PhotoSize> thumb
+    @JsonProperty("file_id")
+    val file_id: String,
+
+    @JsonProperty("file_unique_id")
+    val fileUniqueId: String,
+
+    @JsonProperty("duration")
+    val duration: Long = 0,
+
+    @JsonProperty("performer")
+    val performer: String? = null,
+
+    @JsonProperty("title")
+    val title: String? = null,
+
+    @JsonProperty("file_name")
+    val fileName: String? = null,
+
+    @JsonProperty("mime_type")
+    val mimeType: String? = null,
+
+    @JsonProperty("file_size")
+    val fileSize: Int? = null,
+
+    @JsonProperty("thumb")
+    val thumb: PhotoSize? = null,
 ) {
 }

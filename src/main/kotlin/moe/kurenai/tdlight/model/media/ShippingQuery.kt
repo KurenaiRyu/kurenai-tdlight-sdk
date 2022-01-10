@@ -1,12 +1,20 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.message.User;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.message.User
 
-public record ShippingQuery(
-        @JsonProperty("id") String id,
-        @JsonProperty("from") User from,
-        @JsonProperty("invoice_payload") String invoicePayload,
-        @JsonProperty("shipping_address") ShippingAddress shippingAddress
+data class ShippingQuery(
+
+    @JsonProperty("id")
+    val id: String,
+
+    @JsonProperty("from")
+    val from: User,
+
+    @JsonProperty("invoice_payload")
+    val invoicePayload: String,
+
+    @JsonProperty("shipping_address")
+    val shippingAddress: ShippingAddress,
 ) {
 }

@@ -1,20 +1,37 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.Optional;
-import java.util.OptionalInt;
+data class Sticker(
 
-public record Sticker(
-        @JsonProperty("file_id") String file_id,
-        @JsonProperty("file_unique_id") String fileUniqueId,
-        @JsonProperty("width") int width,
-        @JsonProperty("height") int height,
-        @JsonProperty("is_animated") Boolean isAnimated,
-        @JsonProperty("thumb") Optional<PhotoSize> thumb,
-        @JsonProperty("emoji") Optional<String> emoji,
-        @JsonProperty("set_name") Optional<String> fileName,
-        @JsonProperty("mask_position") Optional<MaskPosition> mimeType,
-        @JsonProperty("file_size") OptionalInt fileSize
+    @JsonProperty("file_id")
+    val file_id: String,
+
+    @JsonProperty("file_unique_id")
+    val fileUniqueId: String,
+
+    @JsonProperty("width")
+    val width: Int = 0,
+
+    @JsonProperty("height")
+    val height: Int = 0,
+
+    @JsonProperty("is_animated")
+    val isAnimated: Boolean,
+
+    @JsonProperty("thumb")
+    val thumb: PhotoSize? = null,
+
+    @JsonProperty("emoji")
+    val emoji: String? = null,
+
+    @JsonProperty("set_name")
+    val fileName: String? = null,
+
+    @JsonProperty("mask_position")
+    val mimeType: MaskPosition? = null,
+
+    @JsonProperty("file_size")
+    val fileSize: Int? = null,
 ) {
 }

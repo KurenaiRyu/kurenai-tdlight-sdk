@@ -1,10 +1,10 @@
 package moe.kurenai.tdlight
 
-import moe.kurenai.tdlight.client.UserClient
+import moe.kurenai.tdlight.client.TDLightClient
 
 interface TelegramBot {
 
-    val client: UserClient
+    val client: TDLightClient
 
     fun subscribeToUpdate()
 }

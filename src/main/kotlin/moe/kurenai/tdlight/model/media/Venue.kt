@@ -1,16 +1,35 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.media.PhotoSize
+import java.util.Optional
+import moe.kurenai.tdlight.model.message.MessageEntity
+import moe.kurenai.tdlight.model.media.Animation
+import java.util.OptionalInt
+import moe.kurenai.tdlight.model.encrypt.EncryptedPassportElement
+import moe.kurenai.tdlight.model.encrypt.EncryptedCredentials
+import moe.kurenai.tdlight.model.media.ShippingAddress
+import moe.kurenai.tdlight.model.media.OrderInfo
 
-import java.util.Optional;
+class Venue {
+    @JsonProperty("location")
+    var location: Location? = null
 
-public record Venue(
-        @JsonProperty("location") Location location,
-        @JsonProperty("title") String title,
-        @JsonProperty("address") String address,
-        @JsonProperty("foursquare_id") Optional<String> foursquareId,
-        @JsonProperty("foursquare_type") Optional<String> foursquareType,
-        @JsonProperty("google_place_id") Optional<String> googlePlaceId,
-        @JsonProperty("google_place_type") Optional<String> googlePlaceType
-) {
+    @JsonProperty("title")
+    var title: String? = null
+
+    @JsonProperty("address")
+    var address: String? = null
+
+    @JsonProperty("foursquare_id")
+    var foursquareId: Optional<String>? = null
+
+    @JsonProperty("foursquare_type")
+    var foursquareType: Optional<String>? = null
+
+    @JsonProperty("google_place_id")
+    var googlePlaceId: Optional<String>? = null
+
+    @JsonProperty("google_place_type")
+    var googlePlaceType: Optional<String>? = null
 }

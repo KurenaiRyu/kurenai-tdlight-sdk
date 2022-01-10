@@ -1,16 +1,25 @@
-package moe.kurenai.tdlight.model.keyboard;
+package moe.kurenai.tdlight.model.keyboard
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import moe.kurenai.tdlight.model.message.ReplyMarkup;
+import moe.kurenai.tdlight.model.message.ReplyMarkup
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.keyboard.KeyboardButton
+import java.util.Optional
 
-import java.util.List;
-import java.util.Optional;
+data class ReplyKeyboardMarkup(
 
-public record ReplyKeyboardMarkup(
-        @JsonProperty("keyboard") List<List<KeyboardButton>> keyboard,
-        @JsonProperty("resize_keyboard") Optional<Boolean> resizeKeyboard,
-        @JsonProperty("one_time_keyboard") Optional<Boolean> oneTimeKeyboard,
-        @JsonProperty("input_field_placeholder") Optional<String> inputFieldPlaceholder,
-        @JsonProperty("selective") Optional<Boolean> selective
-) implements ReplyMarkup {
+    @JsonProperty("keyboard")
+    val keyboard: List<List<KeyboardButton>>,
+
+    @JsonProperty("resize_keyboard")
+    val resizeKeyboard: Boolean? = null,
+
+    @JsonProperty("one_time_keyboard")
+    val oneTimeKeyboard: Boolean? = null,
+
+    @JsonProperty("input_field_placeholder")
+    val inputFieldPlaceholder: String? = null,
+
+    @JsonProperty("selective")
+    val selective: Boolean? = null,
+) : ReplyMarkup {
 }

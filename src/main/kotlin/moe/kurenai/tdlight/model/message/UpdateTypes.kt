@@ -1,12 +1,5 @@
-package moe.kurenai.tdlight.model.message;
+package moe.kurenai.tdlight.model.message
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public enum UpdateTypes {
-    @JsonProperty("message")
-    MESSAGE,
-    @JsonProperty("channel_post")
-    CHANNEL_POST,
-    @JsonProperty("callback_query")
-    CALLBACK_QUERY
+enum class UpdateTypes {
+    MESSAGE, CHANNEL_POST, CALLBACK_QUERY
 }

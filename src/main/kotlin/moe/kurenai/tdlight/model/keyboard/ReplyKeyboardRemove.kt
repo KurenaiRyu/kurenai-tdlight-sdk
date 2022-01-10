@@ -1,12 +1,15 @@
-package moe.kurenai.tdlight.model.keyboard;
+package moe.kurenai.tdlight.model.keyboard
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import moe.kurenai.tdlight.model.message.ReplyMarkup;
+import moe.kurenai.tdlight.model.message.ReplyMarkup
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
 
-import java.util.Optional;
+data class ReplyKeyboardRemove(
 
-public record ReplyKeyboardRemove(
-        @JsonProperty("remove_keyboard") Boolean removeKeyboard,
-        @JsonProperty("selective") Optional<Boolean> selective
-) implements ReplyMarkup {
+    @JsonProperty("remove_keyboard")
+    val removeKeyboard: Boolean,
+
+    @JsonProperty("selective")
+    val selective: Boolean? = null
+) : ReplyMarkup {
 }

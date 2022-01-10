@@ -1,17 +1,29 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.message.User;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.message.User
 
-import java.util.Optional;
+data class PreCheckoutQuery(
 
-public record PreCheckoutQuery(
-        @JsonProperty("id") String id,
-        @JsonProperty("from") User from,
-        @JsonProperty("currency") String currency,
-        @JsonProperty("total_amount") int totalAmount,
-        @JsonProperty("invoice_payload") String invoicePayload,
-        @JsonProperty("shipping_option_id") Optional<String> shippingOptionId,
-        @JsonProperty("order_info") Optional<OrderInfo> orderInfo
+    @JsonProperty("id")
+    val id: String,
+
+    @JsonProperty("from")
+    val from: User,
+
+    @JsonProperty("currency")
+    val currency: String,
+
+    @JsonProperty("total_amount")
+    val totalAmount: Int = 0,
+
+    @JsonProperty("invoice_payload")
+    val invoicePayload: String,
+
+    @JsonProperty("shipping_option_id")
+    val shippingOptionId: String? = null,
+
+    @JsonProperty("order_info")
+    val orderInfo: OrderInfo? = null,
 ) {
 }

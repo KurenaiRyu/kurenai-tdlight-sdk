@@ -1,6 +1,5 @@
-package moe.kurenai.tdlight.model.poll;
+package moe.kurenai.tdlight.model.poll
 
-public enum PollType {
-    REGIULAR,
-    QUIZ
+enum class PollType {
+    REGIULAR, QUIZ
 }

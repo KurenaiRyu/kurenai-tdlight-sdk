@@ -1,8 +1,12 @@
-package moe.kurenai.tdlight.model.voice;
+package moe.kurenai.tdlight.model.voice
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
+import java.util.OptionalInt
 
-public record VoiceChatEnded(
-        @JsonProperty("duration") int duration
+data class VoiceChatEnded(
+
+    @JsonProperty("duration")
+    var duration: Long = 0
 ) {
 }

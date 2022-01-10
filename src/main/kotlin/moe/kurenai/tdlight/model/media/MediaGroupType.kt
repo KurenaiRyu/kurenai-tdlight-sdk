@@ -1,8 +1,5 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-public enum MediaGroupType {
-    AUDIO,
-    DOCUMENT,
-    PHOTO,
-    VIDEO
+enum class MediaGroupType {
+    AUDIO, DOCUMENT, PHOTO, VIDEO
 }

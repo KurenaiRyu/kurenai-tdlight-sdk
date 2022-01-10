@@ -1,8 +1,12 @@
-package moe.kurenai.tdlight.model.voice;
+package moe.kurenai.tdlight.model.voice
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
+import java.util.OptionalInt
 
-public record VoiceChatScheduled(
-        @JsonProperty("start_date") int startDate
+data class VoiceChatScheduled(
+
+    @JsonProperty("start_date")
+    val startDate: Long = 0
 ) {
 }

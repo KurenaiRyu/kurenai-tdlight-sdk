@@ -1,4 +1,3 @@
-package moe.kurenai.tdlight.model.chat;
+package moe.kurenai.tdlight.model.chat
 
-public interface ChatMember {
-}
+interface ChatMember 

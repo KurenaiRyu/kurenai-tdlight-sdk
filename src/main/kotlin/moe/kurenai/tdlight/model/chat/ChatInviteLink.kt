@@ -1,21 +1,35 @@
-package moe.kurenai.tdlight.model.chat;
+package moe.kurenai.tdlight.model.chat
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.message.User;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.message.User
 
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
+data class ChatInviteLink(
 
-public record ChatInviteLink(
-        @JsonProperty("invite_link") String inviteLink,
-        @JsonProperty("creator") User creator,
-        @JsonProperty("creates_join_request") boolean createsJoinRequest,
-        @JsonProperty("is_primary") boolean isPrimary,
-        @JsonProperty("is_revoked") boolean isRevoked,
-        @JsonProperty("name") Optional<String> name,
-        @JsonProperty("expire_date") OptionalLong expireDate,
-        @JsonProperty("member_limit") OptionalInt memberLimit,
-        @JsonProperty("pending_join_request_count") OptionalInt pendingJoinRequestCount
+    @JsonProperty("invite_link")
+    val inviteLink: String,
+
+    @JsonProperty("creator")
+    val creator: User,
+
+    @JsonProperty("creates_join_request")
+    val createsJoinRequest: Boolean = false,
+
+    @JsonProperty("is_primary")
+    val isPrimary: Boolean = false,
+
+    @JsonProperty("is_revoked")
+    val isRevoked: Boolean = false,
+
+    @JsonProperty("name")
+    val name: String? = null,
+
+    @JsonProperty("expire_date")
+    val expireDate: Long? = null,
+
+    @JsonProperty("member_limit")
+    val memberLimit: Int? = null,
+
+    @JsonProperty("pending_join_request_count")
+    val pendingJoinRequestCount: Int? = null,
 ) {
 }

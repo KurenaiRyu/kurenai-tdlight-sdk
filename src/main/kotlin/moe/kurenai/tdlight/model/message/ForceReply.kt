@@ -1,12 +1,15 @@
-package moe.kurenai.tdlight.model.message;
+package moe.kurenai.tdlight.model.message
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.Optional;
+data class ForceReply(
 
-public record ForceReply(
-        @JsonProperty("force_reply") Boolean forceReply,
-        @JsonProperty("input_field_placeholder") Optional<String> inputFieldPlaceholder,
-        @JsonProperty("selective") Optional<Boolean> selective
-) implements ReplyMarkup {
-}
+    @JsonProperty("force_reply")
+    val forceReply: Boolean,
+
+    @JsonProperty("input_field_placeholder")
+    val inputFieldPlaceholder: String? = null,
+
+    @JsonProperty("selective")
+    val selective: Boolean? = null,
+) : ReplyMarkup

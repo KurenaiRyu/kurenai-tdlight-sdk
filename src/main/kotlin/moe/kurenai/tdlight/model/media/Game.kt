@@ -1,17 +1,32 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.message.MessageEntity;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.media.PhotoSize
+import java.util.Optional
+import moe.kurenai.tdlight.model.message.MessageEntity
+import moe.kurenai.tdlight.model.media.Animation
+import java.util.OptionalInt
+import moe.kurenai.tdlight.model.encrypt.EncryptedPassportElement
+import moe.kurenai.tdlight.model.encrypt.EncryptedCredentials
+import moe.kurenai.tdlight.model.media.ShippingAddress
+import moe.kurenai.tdlight.model.media.OrderInfo
 
-import java.util.List;
-import java.util.Optional;
+class Game {
+    @JsonProperty("title")
+    var title: String? = null
 
-public record Game(
-        @JsonProperty("title") String title,
-        @JsonProperty("description") String description,
-        @JsonProperty("photo") List<PhotoSize> photo,
-        @JsonProperty("text") Optional<String> text,
-        @JsonProperty("text_entities") List<MessageEntity> textEntities,
-        @JsonProperty("animation") Optional<Animation> animation
-) {
+    @JsonProperty("description")
+    var description: String? = null
+
+    @JsonProperty("photo")
+    var photo: List<PhotoSize>? = null
+
+    @JsonProperty("text")
+    var text: Optional<String>? = null
+
+    @JsonProperty("text_entities")
+    var textEntities: List<MessageEntity>? = null
+
+    @JsonProperty("animation")
+    var animation: Optional<Animation>? = null
 }

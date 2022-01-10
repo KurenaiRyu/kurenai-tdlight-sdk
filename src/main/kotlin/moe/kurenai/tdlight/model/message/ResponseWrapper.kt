@@ -1,15 +1,21 @@
-package moe.kurenai.tdlight.model.message;
+package moe.kurenai.tdlight.model.message
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import java.util.Optional;
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
 @JsonSerialize
-public record ResponseWrapper<T>(
-        @JsonProperty("ok") boolean ok,
-        @JsonProperty("result") Optional<T> result,
-        @JsonProperty("error_code") Optional<String> errorCode,
-        @JsonProperty("description") Optional<String> description
+data class ResponseWrapper<T>(
+
+    @JsonProperty("ok")
+    val ok: Boolean = false,
+
+    @JsonProperty("result")
+    val result: T? = null,
+
+    @JsonProperty("error_code")
+    val errorCode: String? = null,
+
+    @JsonProperty("description")
+    val description: String? = null,
 ) {
 }

@@ -1,15 +1,24 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
+import moe.kurenai.tdlight.model.media.PhotoSize
+import java.util.OptionalInt
+import moe.kurenai.tdlight.model.chat.ChatMember
 
-import java.util.Optional;
-import java.util.OptionalInt;
+class Contact {
+    @JsonProperty("phone_number")
+    var phoneNumber: String? = null
 
-public record Contact(
-        @JsonProperty("phone_number") String phoneNumber,
-        @JsonProperty("first_name") String firstName,
-        @JsonProperty("last_name") Optional<String> lastName,
-        @JsonProperty("user_id") OptionalInt userId,
-        @JsonProperty("vcard") Optional<String> vcard
-) {
+    @JsonProperty("first_name")
+    var firstName: String? = null
+
+    @JsonProperty("last_name")
+    var lastName: Optional<String>? = null
+
+    @JsonProperty("user_id")
+    var userId: OptionalInt? = null
+
+    @JsonProperty("vcard")
+    var vcard: Optional<String>? = null
 }

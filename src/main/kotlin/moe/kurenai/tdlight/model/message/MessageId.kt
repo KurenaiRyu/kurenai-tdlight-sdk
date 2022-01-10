@@ -1,10 +1,10 @@
-package moe.kurenai.tdlight.model.message;
+package moe.kurenai.tdlight.model.message
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.OptionalLong
 
-import java.util.OptionalLong;
-
-public record MessageId(
-        @JsonProperty("message_id") OptionalLong messageId
+data class MessageId(
+    @JsonProperty("message_id")
+    val messageId: Long? = null
 ) {
 }

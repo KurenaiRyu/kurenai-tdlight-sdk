@@ -1,11 +1,11 @@
-package moe.kurenai.tdlight.model.voice;
+package moe.kurenai.tdlight.model.voice
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.message.User;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.message.User
 
-import java.util.List;
+data class VoiceChatParticipantsInvited(
 
-public record VoiceChatParticipantsInvited(
-        @JsonProperty("users") List<User> users
+    @JsonProperty("users")
+    val users: List<User>
 ) {
 }

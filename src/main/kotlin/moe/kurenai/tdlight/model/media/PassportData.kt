@@ -1,13 +1,20 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.encrypt.EncryptedCredentials;
-import dev.tobee.telegram.model.encrypt.EncryptedPassportElement;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.media.PhotoSize
+import java.util.Optional
+import moe.kurenai.tdlight.model.message.MessageEntity
+import moe.kurenai.tdlight.model.media.Animation
+import java.util.OptionalInt
+import moe.kurenai.tdlight.model.encrypt.EncryptedPassportElement
+import moe.kurenai.tdlight.model.encrypt.EncryptedCredentials
+import moe.kurenai.tdlight.model.media.ShippingAddress
+import moe.kurenai.tdlight.model.media.OrderInfo
 
-import java.util.List;
+class PassportData {
+    @JsonProperty("data")
+    var data: List<EncryptedPassportElement>? = null
 
-public record PassportData(
-        @JsonProperty("data") List<EncryptedPassportElement> data,
-        @JsonProperty("credentials") EncryptedCredentials credentials
-) {
+    @JsonProperty("credentials")
+    var credentials: EncryptedCredentials? = null
 }

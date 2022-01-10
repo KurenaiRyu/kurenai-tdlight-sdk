@@ -1,13 +1,26 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.media.PhotoSize
+import java.util.Optional
+import moe.kurenai.tdlight.model.message.MessageEntity
+import moe.kurenai.tdlight.model.media.Animation
+import java.util.OptionalInt
+import moe.kurenai.tdlight.model.encrypt.EncryptedPassportElement
+import moe.kurenai.tdlight.model.encrypt.EncryptedCredentials
+import moe.kurenai.tdlight.model.media.ShippingAddress
+import moe.kurenai.tdlight.model.media.OrderInfo
 
-import java.util.Optional;
+class OrderInfo {
+    @JsonProperty("name")
+    var name: Optional<String>? = null
 
-public record OrderInfo(
-        @JsonProperty("name") Optional<String> name,
-        @JsonProperty("phone_number") Optional<String> phone_number,
-        @JsonProperty("email") Optional<String> email,
-        @JsonProperty("shipping_address") Optional<ShippingAddress> shippingAddress
-) {
+    @JsonProperty("phone_number")
+    var phone_number: Optional<String>? = null
+
+    @JsonProperty("email")
+    var email: Optional<String>? = null
+
+    @JsonProperty("shipping_address")
+    var shippingAddress: Optional<ShippingAddress>? = null
 }

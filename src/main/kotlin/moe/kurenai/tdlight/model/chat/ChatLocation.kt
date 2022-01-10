@@ -1,10 +1,14 @@
-package moe.kurenai.tdlight.model.chat;
+package moe.kurenai.tdlight.model.chat
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.media.Location;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.media.Location
 
-public record ChatLocation(
-        @JsonProperty("location") Location location,
-        @JsonProperty("address") String address
+data class ChatLocation(
+
+    @JsonProperty("location")
+    val location: Location,
+
+    @JsonProperty("address")
+    val address: String,
 ) {
 }

@@ -1,45 +1,48 @@
 package moe.kurenai.tdlight
 
-import moe.kurenai.tdlight.client.UserClient
+import moe.kurenai.tdlight.client.TDLightClient
 import moe.kurenai.tdlight.model.message.Update
 import moe.kurenai.tdlight.model.message.UpdateTypes
 import moe.kurenai.tdlight.request.chat.GetUpdates
-import org.slf4j.LoggerFactory
-import java.util.concurrent.Executors
+import org.apache.logging.log4j.LogManager
+import java.util.concurrent.*
 import java.util.concurrent.Flow.Subscriber
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.SubmissionPublisher
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import java.util.function.Consumer
 
 class LongPollingTelegramBot : TelegramBot {
+
+    companion object {
+        private val log = LogManager.getLogger()
+    }
+
     private val executorService: ScheduledExecutorService
-    private var initialDelay = 1
-    private var period = 1
-    override val client: UserClient
-    private val publisher = SubmissionPublisher<Update>()
+    private var initialDelay = 1L
+    private var period = 1L
+    private val publisher: SubmissionPublisher<Update>
+    override val client: TDLightClient
     var status = true
 
-    constructor(userClient: UserClient, subscribers: List<Subscriber<Update>?>) {
-        this.client = userClient
-        executorService = Executors.newSingleThreadScheduledExecutor()
-        subscribers.forEach(Consumer { subscriber: Subscriber<Update>? -> publisher.subscribe(subscriber) })
+    constructor(client: TDLightClient, subscribers: List<Subscriber<Update>>) {
+        this.client = client
+        this.executorService = Executors.newSingleThreadScheduledExecutor()
+        this.publisher = SubmissionPublisher<Update>(defaultPublishPool(), Flow.defaultBufferSize())
+        subscribers.forEach(Consumer { subscriber: Subscriber<Update> -> publisher.subscribe(subscriber) })
+        subscribeToUpdate()
     }
 
     constructor(
-        host: String?, token: String?, executorService: ScheduledExecutorService,
-        subscriber: Subscriber<Update>?
+        client: TDLightClient,
+        executorService: ScheduledExecutorService,
+        publish: SubmissionPublisher<Update>,
+        subscribers: List<Subscriber<Update>>
     ) {
-        client = UserClient(host!!, true)
+        this.client = client
         this.executorService = executorService
-        publisher.subscribe(subscriber)
-    }
-
-    constructor(host: String?, token: String?, subscriber: Subscriber<Update>?) {
-        client = UserClient(host!!, true)
-        executorService = Executors.newSingleThreadScheduledExecutor()
-        publisher.subscribe(subscriber)
+        this.publisher = publish
+        subscribers.forEach(Consumer { subscriber: Subscriber<Update> -> publisher.subscribe(subscriber) })
+        subscribeToUpdate()
     }
 
     override fun subscribeToUpdate() {
@@ -51,7 +54,7 @@ class LongPollingTelegramBot : TelegramBot {
                         GetUpdates(
                             lastUpdate.get(),
                             null, null,
-                            java.util.List.of(UpdateTypes.MESSAGE, UpdateTypes.CALLBACK_QUERY, UpdateTypes.CHANNEL_POST)
+                            listOf(UpdateTypes.MESSAGE, UpdateTypes.CALLBACK_QUERY, UpdateTypes.CHANNEL_POST)
                         )
                     } else {
                         GetUpdates(null, null, null, null)
@@ -60,20 +63,35 @@ class LongPollingTelegramBot : TelegramBot {
                     updates?.forEach(publisher::submit)
                     handleLastUpdateId(updates?.lastOrNull(), lastUpdate)
                 } catch (e: Exception) {
-                    logger.error("Error on receive update", e)
+                    log.error("Error on receive update", e)
                 }
             },
-            initialDelay.toLong(),
-            period.toLong(),
+            initialDelay,
+            period,
             TimeUnit.SECONDS
         )
     }
 
     private fun handleLastUpdateId(update: Update?, lastUpdate: AtomicLong) {
-        update?.let { lastUpdate.set(update.updateId().orElse(0) + 1) } ?: lastUpdate.set(0)
+        update?.let { lastUpdate.set(update.updateId + 1) } ?: lastUpdate.set(0)
     }
 
-    companion object {
-        private val logger = LoggerFactory.getLogger(LongPollingTelegramBot::class.java)
+    private fun defaultPublishPool(): ThreadPoolExecutor {
+        return ThreadPoolExecutor(
+            1, 1, 1L, TimeUnit.MILLISECONDS,
+            LinkedBlockingQueue(300), object : ThreadFactory {
+                val threadNumber = AtomicInteger(0)
+                override fun newThread(r: Runnable): Thread {
+                    val t = Thread(
+                        Thread.currentThread().threadGroup, r,
+                        "telegram-publish-" + threadNumber.getAndIncrement(),
+                        0
+                    )
+                    if (t.isDaemon) t.isDaemon = false
+                    if (t.priority != Thread.NORM_PRIORITY) t.priority = Thread.NORM_PRIORITY
+                    return t
+                }
+            }
+        )
     }
 }

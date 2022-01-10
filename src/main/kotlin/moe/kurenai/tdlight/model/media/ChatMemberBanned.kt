@@ -1,12 +1,21 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import moe.kurenai.tdlight.model.chat.ChatMember;
-import moe.kurenai.tdlight.model.message.User;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
+import moe.kurenai.tdlight.model.media.PhotoSize
+import java.util.OptionalInt
+import moe.kurenai.tdlight.model.chat.ChatMember
+import moe.kurenai.tdlight.model.message.User
 
-public record ChatMemberBanned(
-        @JsonProperty("status") String status,
-        @JsonProperty("user") User user,
-        @JsonProperty("until_date") long untilDate
-) implements ChatMember {
+data class ChatMemberBanned(
+
+    @JsonProperty("status")
+    val status: String,
+
+    @JsonProperty("user")
+    val user: User,
+
+    @JsonProperty("until_date")
+    val untilDate: Long = 0,
+) : ChatMember {
 }

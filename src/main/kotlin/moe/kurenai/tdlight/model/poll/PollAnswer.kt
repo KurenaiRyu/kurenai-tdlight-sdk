@@ -1,13 +1,17 @@
-package moe.kurenai.tdlight.model.poll;
+package moe.kurenai.tdlight.model.poll
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.message.User;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.message.User
 
-import java.util.List;
+data class PollAnswer(
 
-public record PollAnswer(
-        @JsonProperty("poll_id") String pollId,
-        @JsonProperty("user") User user,
-        @JsonProperty("option_ids") List<Integer> optionIds
+    @JsonProperty("poll_id")
+    val pollId: String,
+
+    @JsonProperty("user")
+    val user: User,
+
+    @JsonProperty("option_ids")
+    val optionIds: List<Int>,
 ) {
 }

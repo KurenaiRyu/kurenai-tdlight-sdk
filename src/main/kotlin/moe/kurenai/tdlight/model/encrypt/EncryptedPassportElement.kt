@@ -1,21 +1,38 @@
-package moe.kurenai.tdlight.model.encrypt;
+package moe.kurenai.tdlight.model.encrypt
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import moe.kurenai.tdlight.model.media.PassportFile;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.media.PassportFile
 
-import java.util.List;
-import java.util.Optional;
+data class EncryptedPassportElement(
 
-public record EncryptedPassportElement(
-        @JsonProperty("type") EncryptedCredentialsType type,
-        @JsonProperty("data") Optional<String> data,
-        @JsonProperty("phone_number") Optional<String> phoneNumber,
-        @JsonProperty("email") Optional<String> email,
-        @JsonProperty("files") List<PassportFile> files,
-        @JsonProperty("front_side") Optional<PassportFile> frontSide,
-        @JsonProperty("reverse_side") Optional<PassportFile> reverseSide,
-        @JsonProperty("selfie") Optional<PassportFile> selfie,
-        @JsonProperty("translation") List<PassportFile> translation,
-        @JsonProperty("hash") List<String> hash
+    @JsonProperty("type")
+    val type: EncryptedCredentialsType,
+
+    @JsonProperty("data")
+    val data: String? = null,
+
+    @JsonProperty("phone_number")
+    val phoneNumber: String? = null,
+
+    @JsonProperty("email")
+    val email: String? = null,
+
+    @JsonProperty("files")
+    val files: List<PassportFile>,
+
+    @JsonProperty("front_side")
+    val frontSide: PassportFile? = null,
+
+    @JsonProperty("reverse_side")
+    val reverseSide: PassportFile? = null,
+
+    @JsonProperty("selfie")
+    val selfie: PassportFile? = null,
+
+    @JsonProperty("translation")
+    val translation: List<PassportFile>,
+
+    @JsonProperty("hash")
+    val hash: List<String>,
 ) {
 }

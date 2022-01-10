@@ -1,14 +1,28 @@
-package moe.kurenai.tdlight.model.message;
+package moe.kurenai.tdlight.model.message
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public record CallbackQuery(
-        @JsonProperty("id") String id,
-        @JsonProperty("from") User from,
-        @JsonProperty("message") Message message,
-        @JsonProperty("inline_message_id") String inlineMessageId,
-        @JsonProperty("chat_instance") String chatInstance,
-        @JsonProperty("data") String data,
-        @JsonProperty("game_short_name") String gameShortName
+data class CallbackQuery(
+
+    @JsonProperty("id")
+    val id: String,
+
+    @JsonProperty("from")
+    val from: User,
+
+    @JsonProperty("message")
+    val message: Message?,
+
+    @JsonProperty("inline_message_id")
+    val inlineMessageId: String? = null,
+
+    @JsonProperty("chat_instance")
+    val chatInstance: String,
+
+    @JsonProperty("data")
+    val data: String?,
+
+    @JsonProperty("game_short_name")
+    val gameShortName: String? = null,
 ) {
 }

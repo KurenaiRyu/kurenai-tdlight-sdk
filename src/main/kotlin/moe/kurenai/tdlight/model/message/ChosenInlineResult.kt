@@ -1,15 +1,22 @@
-package moe.kurenai.tdlight.model.message;
+package moe.kurenai.tdlight.model.message
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.media.Location;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.media.Location
 
-import java.util.Optional;
+data class ChosenInlineResult(
 
-public record ChosenInlineResult(
-        @JsonProperty("result_id") String resultId,
-        @JsonProperty("from") User from,
-        @JsonProperty("location") Optional<Location> location,
-        @JsonProperty("inline_message_id") Optional<String> inlineMessageId,
-        @JsonProperty("query") Optional<String> query
-) {
-}
+    @JsonProperty("result_id")
+    val resultId: String,
+
+    @JsonProperty("from")
+    val from: User,
+
+    @JsonProperty("location")
+    val location: Location? = null,
+
+    @JsonProperty("inline_message_id")
+    val inlineMessageId: String? = null,
+
+    @JsonProperty("query")
+    val query: String? = null,
+)

@@ -1,17 +1,32 @@
-package moe.kurenai.tdlight.model.chat;
+package moe.kurenai.tdlight.model.chat
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
 
-import java.util.Optional;
+data class ChatPermissions(
 
-public record ChatPermissions(
-        @JsonProperty("can_send_messages") Optional<Boolean> canSendMessages,
-        @JsonProperty("can_send_media_messages") Optional<Boolean> canSendMediaMessages,
-        @JsonProperty("can_send_polls") Optional<Boolean> canSendPolls,
-        @JsonProperty("can_send_other_messages") Optional<Boolean> canSendOtherMessages,
-        @JsonProperty("can_add_web_page_previews") Optional<Boolean> canAddWebPagePreviews,
-        @JsonProperty("can_change_info") Optional<Boolean> canChangeInfo,
-        @JsonProperty("can_invite_users") Optional<Boolean> canInviteUsers,
-        @JsonProperty("can_pin_messages") Optional<Boolean> canPinMessages
+    @JsonProperty("can_send_messages")
+    val canSendMessages: Boolean? = null,
+
+    @JsonProperty("can_send_media_messages")
+    val canSendMediaMessages: Boolean? = null,
+
+    @JsonProperty("can_send_polls")
+    val canSendPolls: Boolean? = null,
+
+    @JsonProperty("can_send_other_messages")
+    val canSendOtherMessages: Boolean? = null,
+
+    @JsonProperty("can_add_web_page_previews")
+    val canAddWebPagePreviews: Boolean? = null,
+
+    @JsonProperty("can_change_info")
+    val canChangeInfo: Boolean? = null,
+
+    @JsonProperty("can_invite_users")
+    val canInviteUsers: Boolean? = null,
+
+    @JsonProperty("can_pin_messages")
+    val canPinMessages: Boolean? = null,
 ) {
 }

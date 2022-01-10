@@ -1,10 +1,16 @@
-package moe.kurenai.tdlight.model.encrypt;
+package moe.kurenai.tdlight.model.encrypt
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public record EncryptedCredentials(
-        @JsonProperty("data") String data,
-        @JsonProperty("hash") String hash,
-        @JsonProperty("secret") String secret
+data class EncryptedCredentials(
+
+    @JsonProperty("data")
+    val data: String,
+
+    @JsonProperty("hash")
+    val hash: String,
+
+    @JsonProperty("secret")
+    val secret: String,
 ) {
 }

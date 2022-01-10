@@ -1,4 +1,28 @@
-package moe.kurenai.tdlight.model.media;
+package moe.kurenai.tdlight.model.media
 
-public record InputFile(String fileName, String mimeType, byte[] content) {
+data class InputFile(
+
+    val fileName: String,
+    val mimeType: String,
+    val content: ByteArray,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as InputFile
+
+        if (fileName != other.fileName) return false
+        if (mimeType != other.mimeType) return false
+        if (!content.contentEquals(other.content)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = fileName.hashCode()
+        result = 31 * result + mimeType.hashCode()
+        result = 31 * result + content.contentHashCode()
+        return result
+    }
 }

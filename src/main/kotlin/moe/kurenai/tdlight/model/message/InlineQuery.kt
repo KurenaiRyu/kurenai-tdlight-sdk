@@ -1,17 +1,26 @@
-package moe.kurenai.tdlight.model.message;
+package moe.kurenai.tdlight.model.message
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.chat.ChatType;
-import dev.tobee.telegram.model.media.Location;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.chat.ChatType
+import moe.kurenai.tdlight.model.media.Location
+import java.util.*
 
-import java.util.Optional;
+data class InlineQuery(
+    @JsonProperty("id")
+    var id: String,
 
-public record InlineQuery(
-        @JsonProperty("id") String id,
-        @JsonProperty("from") User from,
-        @JsonProperty("query") String query,
-        @JsonProperty("offset") String offset,
-        @JsonProperty("chat_type") Optional<ChatType> chatType,
-        @JsonProperty("location") Optional<Location> location
-) {
-}
+    @JsonProperty("from")
+    var from: User,
+
+    @JsonProperty("query")
+    var query: String,
+
+    @JsonProperty("offset")
+    var offset: String,
+
+    @JsonProperty("chat_type")
+    var chatType: ChatType? = null,
+
+    @JsonProperty("location")
+    var location: Location? = null,
+)

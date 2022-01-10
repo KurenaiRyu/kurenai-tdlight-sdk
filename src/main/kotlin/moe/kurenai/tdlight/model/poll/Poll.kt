@@ -1,24 +1,50 @@
-package moe.kurenai.tdlight.model.poll;
+package moe.kurenai.tdlight.model.poll
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import dev.tobee.telegram.model.message.MessageEntity;
+import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.model.poll.PollOption
+import moe.kurenai.tdlight.model.poll.PollType
+import java.util.OptionalInt
+import moe.kurenai.tdlight.model.message.MessageEntity
 
-import java.util.List;
-import java.util.OptionalInt;
+data class Poll(
 
-public record Poll(
-        @JsonProperty("id") String id,
-        @JsonProperty("question") String question,
-        @JsonProperty("options") List<PollOption> options,
-        @JsonProperty("total_voter_count") int totalVoterCount,
-        @JsonProperty("is_closed") Boolean isClosed,
-        @JsonProperty("is_anonymous") Boolean isAnonymous,
-        @JsonProperty("type") PollType type,
-        @JsonProperty("allows_multiple_answers") Boolean allowsMultipleAnswers,
-        @JsonProperty("correct_option_id") OptionalInt correctOptionId,
-        @JsonProperty("explanation") String explanation,
-        @JsonProperty("explanation_entities") List<MessageEntity> explanationEntities,
-        @JsonProperty("open_period") OptionalInt openPeriod,
-        @JsonProperty("close_date") OptionalInt closeDate
+    @JsonProperty("id")
+    val id: String,
+
+    @JsonProperty("question")
+    val question: String,
+
+    @JsonProperty("options")
+    val options: List<PollOption>,
+
+    @JsonProperty("total_voter_count")
+    val totalVoterCount: Int = 0,
+
+    @JsonProperty("is_closed")
+    val isClosed: Boolean,
+
+    @JsonProperty("is_anonymous")
+    val isAnonymous: Boolean,
+
+    @JsonProperty("type")
+    val type: PollType,
+
+    @JsonProperty("allows_multiple_answers")
+    val allowsMultipleAnswers: Boolean,
+
+    @JsonProperty("correct_option_id")
+    val correctOptionId: Int? = null,
+
+    @JsonProperty("explanation")
+    val explanation: String,
+
+    @JsonProperty("explanation_entities")
+    val explanationEntities: List<MessageEntity>,
+
+    @JsonProperty("open_period")
+    val openPeriod: Int? = null,
+
+    @JsonProperty("close_date")
+    val closeDate: Int? = null,
 ) {
 }

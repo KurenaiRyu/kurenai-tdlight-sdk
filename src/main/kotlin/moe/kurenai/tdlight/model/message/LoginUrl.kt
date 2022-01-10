@@ -1,13 +1,20 @@
-package moe.kurenai.tdlight.model.message;
+package moe.kurenai.tdlight.model.message
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.Optional
 
-import java.util.Optional;
+data class LoginUrl(
 
-public record LoginUrl(
-        @JsonProperty("url") String url,
-        @JsonProperty("forward_text") Optional<String> forwardText,
-        @JsonProperty("bot_username") Optional<String> botUsername,
-        @JsonProperty("request_write_access") Optional<Boolean> requestWriteAccess
+    @JsonProperty("url")
+    val url: String? = null,
+
+    @JsonProperty("forward_text")
+    val forwardText: Optional<String>? = null,
+
+    @JsonProperty("bot_username")
+    val botUsername: Optional<String>? = null,
+
+    @JsonProperty("request_write_access")
+    val requestWriteAccess: Optional<Boolean>? = null,
 ) {
 }
