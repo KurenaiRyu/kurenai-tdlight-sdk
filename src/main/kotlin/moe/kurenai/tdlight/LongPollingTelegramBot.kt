@@ -2,9 +2,9 @@ package moe.kurenai.tdlight
 
 import moe.kurenai.tdlight.client.TDLightClient
 import moe.kurenai.tdlight.model.message.Update
-import moe.kurenai.tdlight.model.message.UpdateTypes
 import moe.kurenai.tdlight.request.chat.GetUpdates
 import org.apache.logging.log4j.LogManager
+import java.time.Duration
 import java.util.concurrent.*
 import java.util.concurrent.Flow.Subscriber
 import java.util.concurrent.atomic.AtomicInteger
@@ -52,16 +52,15 @@ class LongPollingTelegramBot : TelegramBot {
                 try {
                     val request: GetUpdates = if (lastUpdate.get() > 0) {
                         GetUpdates(
-                            lastUpdate.get(),
-                            null, null,
-                            listOf(UpdateTypes.MESSAGE, UpdateTypes.CALLBACK_QUERY, UpdateTypes.CHANNEL_POST)
+                            lastUpdate.get(), null, null, null
                         )
                     } else {
                         GetUpdates(null, null, null, null)
                     }
-                    val updates = client.sendSync(request).result
-                    updates?.forEach(publisher::submit)
-                    handleLastUpdateId(updates?.lastOrNull(), lastUpdate)
+                    client.sendSync(request, Duration.ZERO).result?.let { updates ->
+                        updates.forEach(publisher::submit)
+                        handleLastUpdateId(updates.lastOrNull(), lastUpdate)
+                    }
                 } catch (e: Exception) {
                     log.error("Error on receive update", e)
                 }

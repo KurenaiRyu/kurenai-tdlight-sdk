@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import org.apache.logging.log4j.LogManager
@@ -25,6 +24,15 @@ object DefaultMapper{
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
         .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
+
+    val MAPPER_WITH_ALL: ObjectMapper = jsonMapper {
+        addModules(kotlinModule(), Jdk8Module(), JavaTimeModule())
+    }
+        .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
+        .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+        .setSerializationInclusion(JsonInclude.Include.ALWAYS)
 
 
     fun <T> convertToString(t: T): String {
@@ -55,9 +63,8 @@ object DefaultMapper{
         }
     }
 
-    fun <T> convertToMap(t: T): Map<Any, Any> {
-        val reference: TypeReference<Map<Any, Any>> = object : TypeReference<Map<Any, Any>>() {}
-        return MAPPER.convertValue(t, reference)
+    fun <T> convertToMap(t: T): Map<Any, Any?> {
+        return MAPPER_WITH_ALL.convertValue(t, object : TypeReference<Map<Any, Any?>>() {})
     }
 
     fun <T> HttpResponse<ByteArray>.parse(reference: TypeReference<T>): T {

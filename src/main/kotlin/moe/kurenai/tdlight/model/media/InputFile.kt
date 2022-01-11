@@ -1,28 +1,41 @@
 package moe.kurenai.tdlight.model.media
 
-data class InputFile(
+import java.io.File
+import java.io.InputStream
+import java.nio.file.Files
 
-    val fileName: String,
-    val mimeType: String,
-    val content: ByteArray,
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+class InputFile {
 
-        other as InputFile
+    lateinit var attachName: String
+    var fileName: String? = null
+    var mimeType: String? = null
+    var inputStream: InputStream? = null
+    var file: File? = null
 
-        if (fileName != other.fileName) return false
-        if (mimeType != other.mimeType) return false
-        if (!content.contentEquals(other.content)) return false
+    constructor()
 
-        return true
+    constructor(attachName: String) {
+        this.attachName = attachName
     }
 
-    override fun hashCode(): Int {
-        var result = fileName.hashCode()
-        result = 31 * result + mimeType.hashCode()
-        result = 31 * result + content.contentHashCode()
-        return result
+    constructor(file: File, mimeType: String? = null) {
+        this.attachName = "attach://${file.name}"
+        this.file = file
+        this.fileName = file.name
+        this.mimeType = mimeType ?: Files.probeContentType(file.toPath())
+    }
+
+    constructor(inputStream: InputStream, fileName: String, mimeType: String? = null) {
+        this.attachName = "attach://${fileName}"
+        this.inputStream = inputStream
+        this.fileName = fileName
+        this.mimeType = mimeType
+        this.file = null
+    }
+
+    companion object {
+        fun File.toInputFile(): InputFile {
+            return InputFile(this)
+        }
     }
 }

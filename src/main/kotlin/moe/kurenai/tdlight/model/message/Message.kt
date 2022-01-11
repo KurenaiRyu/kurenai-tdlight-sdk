@@ -12,7 +12,7 @@ import moe.kurenai.tdlight.model.voice.VoiceChatScheduled
 
 data class Message(
     @JsonProperty("message_id") val messageId: Long? = null,
-    @JsonProperty("from") val user: User? = null,
+    @JsonProperty("from") val from: User? = null,
     @JsonProperty("sender_chat") val senderChat: Chat? = null,
     @JsonProperty("date") val date: Long,
     @JsonProperty("chat") val chat: Chat,
@@ -80,6 +80,7 @@ data class Message(
         }
     }
 
+    fun hasText() = text?.isNotEmpty() == true
     fun hasAnimation() = animation != null
     fun hasDocument() = document != null
     fun hasVideo() = video != null
@@ -87,4 +88,10 @@ data class Message(
     fun hasPhoto() = photo != null
     fun hasSticker() = sticker != null
     fun hasReplyMarkup() = replyMarkup != null
+    fun isCommand(): Boolean {
+        if (hasText() && entities?.isNotEmpty() == true) {
+            entities.firstOrNull { it.offset == 0 && it.type == MessageEntityType.BOT_COMMAND }?.let { return true }
+        }
+        return false
+    }
 }

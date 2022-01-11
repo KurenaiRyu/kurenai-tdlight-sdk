@@ -4,7 +4,7 @@ import moe.kurenai.tdlight.model.message.Update
 import moe.kurenai.tdlight.util.DefaultMapper.convertToString
 import org.apache.logging.log4j.LogManager
 
-class DefaultUpdateSubscriber : AbstractUpdateSubscriber() {
+open class DefaultUpdateSubscriber : AbstractUpdateSubscriber() {
 
     companion object {
         private val log = LogManager.getLogger()
@@ -15,7 +15,7 @@ class DefaultUpdateSubscriber : AbstractUpdateSubscriber() {
     }
 
     override fun onNext0(update: Update) {
-        log.debug("Received {}", convertToString(update))
+        log.debug("Received \n{}", convertToString(update))
     }
 
     override fun onError0(e: Throwable) {
