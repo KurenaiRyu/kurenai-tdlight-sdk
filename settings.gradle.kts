@@ -1,3 +1,3 @@
 
-rootProject.name = "kurenai-td-light-sdk"
+rootProject.name = "td-light-sdk"
 
