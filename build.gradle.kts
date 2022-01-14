@@ -5,7 +5,7 @@ plugins {
     `maven-publish`
 }
 
-group = "moe.kurenai"
+group = "moe.kurenai.tdlight"
 version = "0.0.1"
 
 repositories {

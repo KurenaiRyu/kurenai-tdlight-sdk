@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager
 import java.time.Duration
 import java.util.concurrent.*
 import java.util.concurrent.Flow.Subscriber
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import java.util.function.Consumer
 
@@ -15,6 +14,22 @@ class LongPollingTelegramBot : TelegramBot {
 
     companion object {
         private val log = LogManager.getLogger()
+
+        private fun defaultPublishPool(): ThreadPoolExecutor {
+            return ThreadPoolExecutor(
+                1, 1, 1L, TimeUnit.MILLISECONDS,
+                LinkedBlockingQueue(300)
+            ) { r ->
+                val t = Thread(
+                    Thread.currentThread().threadGroup, r,
+                    "telegram-publish",
+                    0
+                )
+                if (t.isDaemon) t.isDaemon = false
+                if (t.priority != Thread.NORM_PRIORITY) t.priority = Thread.NORM_PRIORITY
+                t
+            }
+        }
     }
 
     private val executorService: ScheduledExecutorService
@@ -24,19 +39,19 @@ class LongPollingTelegramBot : TelegramBot {
     override val client: TDLightClient
     var status = true
 
-    constructor(client: TDLightClient, subscribers: List<Subscriber<Update>>) {
+    constructor(subscribers: List<Subscriber<Update>>, client: TDLightClient) {
         this.client = client
         this.executorService = Executors.newSingleThreadScheduledExecutor()
         this.publisher = SubmissionPublisher<Update>(defaultPublishPool(), Flow.defaultBufferSize())
-        subscribers.forEach(Consumer { subscriber: Subscriber<Update> -> publisher.subscribe(subscriber) })
+        subscribers.forEach { subscriber: Subscriber<Update> -> publisher.subscribe(subscriber) }
         subscribeToUpdate()
     }
 
     constructor(
+        subscribers: List<Subscriber<Update>>,
         client: TDLightClient,
         executorService: ScheduledExecutorService,
         publish: SubmissionPublisher<Update>,
-        subscribers: List<Subscriber<Update>>
     ) {
         this.client = client
         this.executorService = executorService
@@ -73,24 +88,5 @@ class LongPollingTelegramBot : TelegramBot {
 
     private fun handleLastUpdateId(update: Update?, lastUpdate: AtomicLong) {
         update?.let { lastUpdate.set(update.updateId + 1) } ?: lastUpdate.set(0)
-    }
-
-    private fun defaultPublishPool(): ThreadPoolExecutor {
-        return ThreadPoolExecutor(
-            1, 1, 1L, TimeUnit.MILLISECONDS,
-            LinkedBlockingQueue(300), object : ThreadFactory {
-                val threadNumber = AtomicInteger(0)
-                override fun newThread(r: Runnable): Thread {
-                    val t = Thread(
-                        Thread.currentThread().threadGroup, r,
-                        "telegram-publish-" + threadNumber.getAndIncrement(),
-                        0
-                    )
-                    if (t.isDaemon) t.isDaemon = false
-                    if (t.priority != Thread.NORM_PRIORITY) t.priority = Thread.NORM_PRIORITY
-                    return t
-                }
-            }
-        )
     }
 }

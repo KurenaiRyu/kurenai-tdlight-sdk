@@ -25,9 +25,9 @@ import java.time.Duration
 import java.util.concurrent.CompletableFuture
 
 class TDLightClient(
-    val host: String,
-    var token: String? = null,
-    private val isUserMode: Boolean = true,
+    private val baseUrl: String,
+    private var token: String? = null,
+    isUserMode: Boolean = true,
     private val isDebugEnabled: Boolean = true
 ) {
 
@@ -144,7 +144,7 @@ class TDLightClient(
     }
 
     private fun determineUri(request: Request<*>): URI {
-        return URI.create(if (request.needToken) "$host/$mode$token/${request.method}" else "$host/${request.method}")
+        return URI.create(if (request.needToken) "$baseUrl/$mode$token/${request.method}" else "$baseUrl/${request.method}")
     }
 
     private fun printDebugMultipartData(byteArrays: Iterable<ByteArray>) {
