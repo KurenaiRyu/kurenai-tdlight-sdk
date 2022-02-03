@@ -1,10 +1,10 @@
 package moe.kurenai.tdlight.model.keyboard
 
-import moe.kurenai.tdlight.model.message.ReplyMarkup
 import com.fasterxml.jackson.annotation.JsonProperty
-import moe.kurenai.tdlight.model.keyboard.KeyboardButton
-import java.util.Optional
+import moe.kurenai.tdlight.annotation.NoArg
+import moe.kurenai.tdlight.model.message.ReplyMarkup
 
+@NoArg
 data class ReplyKeyboardMarkup(
 
     @JsonProperty("keyboard")

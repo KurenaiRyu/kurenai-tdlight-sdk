@@ -1,9 +1,9 @@
 package moe.kurenai.tdlight.model.voice
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.Optional
-import java.util.OptionalInt
+import moe.kurenai.tdlight.annotation.NoArg
 
+@NoArg
 data class VoiceChatEnded(
 
     @JsonProperty("duration")

@@ -1,14 +1,13 @@
 package moe.kurenai.tdlight.model.media
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.Optional
-import java.util.OptionalInt
-import moe.kurenai.tdlight.model.media.PhotoSize
+import moe.kurenai.tdlight.annotation.NoArg
 
+@NoArg
 data class Audio(
 
     @JsonProperty("file_id")
-    val file_id: String,
+    val fileId: String,
 
     @JsonProperty("file_unique_id")
     val fileUniqueId: String,

@@ -1,8 +1,9 @@
 package moe.kurenai.tdlight.model.chat
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.Optional
+import moe.kurenai.tdlight.annotation.NoArg
 
+@NoArg
 data class ChatPermissions(
 
     @JsonProperty("can_send_messages")

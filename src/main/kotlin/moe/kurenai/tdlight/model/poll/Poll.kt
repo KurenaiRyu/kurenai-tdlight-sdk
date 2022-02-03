@@ -1,11 +1,10 @@
 package moe.kurenai.tdlight.model.poll
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import moe.kurenai.tdlight.model.poll.PollOption
-import moe.kurenai.tdlight.model.poll.PollType
-import java.util.OptionalInt
+import moe.kurenai.tdlight.annotation.NoArg
 import moe.kurenai.tdlight.model.message.MessageEntity
 
+@NoArg
 data class Poll(
 
     @JsonProperty("id")

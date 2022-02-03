@@ -1,10 +1,11 @@
 package moe.kurenai.tdlight.model.message
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.annotation.NoArg
 import moe.kurenai.tdlight.model.chat.ChatType
 import moe.kurenai.tdlight.model.media.Location
-import java.util.*
 
+@NoArg
 data class InlineQuery(
     @JsonProperty("id")
     var id: String,

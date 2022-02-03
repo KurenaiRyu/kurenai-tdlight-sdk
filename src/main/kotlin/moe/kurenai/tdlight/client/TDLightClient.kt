@@ -1,5 +1,8 @@
 package moe.kurenai.tdlight.client
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.JsonNode
+import moe.kurenai.tdlight.model.ResponseWrapper
 import moe.kurenai.tdlight.model.login.AuthorizationStateType
 import moe.kurenai.tdlight.model.media.InputFile
 import moe.kurenai.tdlight.request.MediaRequest
@@ -8,9 +11,9 @@ import moe.kurenai.tdlight.request.Request
 import moe.kurenai.tdlight.request.login.AuthCode
 import moe.kurenai.tdlight.request.login.AuthPassword
 import moe.kurenai.tdlight.request.login.UserLogin
+import moe.kurenai.tdlight.request.message.*
 import moe.kurenai.tdlight.util.DefaultMapper.MAPPER
 import moe.kurenai.tdlight.util.DefaultMapper.convertToByteArray
-import moe.kurenai.tdlight.util.DefaultMapper.convertToMap
 import moe.kurenai.tdlight.util.DefaultMapper.parse
 import moe.kurenai.tdlight.util.MultiPartBodyPublisher
 import org.apache.logging.log4j.LogManager
@@ -18,21 +21,36 @@ import java.io.File
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
-import java.net.http.HttpRequest.BodyPublisher
 import java.net.http.HttpResponse
-import java.nio.file.Files
 import java.time.Duration
-import java.util.concurrent.CompletableFuture
+import java.util.concurrent.*
 
 class TDLightClient(
     private val baseUrl: String,
-    private var token: String? = null,
+    var token: String? = null,
     isUserMode: Boolean = true,
+    private val pool: ExecutorService = defaultPool(),
     private val isDebugEnabled: Boolean = true
 ) {
 
     companion object {
         private val log = LogManager.getLogger()
+
+        private fun defaultPool(): ThreadPoolExecutor {
+            return ThreadPoolExecutor(
+                5, 10, 30L, TimeUnit.SECONDS,
+                LinkedBlockingQueue(300)
+            ) { r ->
+                val t = Thread(
+                    Thread.currentThread().threadGroup, r,
+                    "telegram-client",
+                    0
+                )
+                if (t.isDaemon) t.isDaemon = false
+                if (t.priority != Thread.NORM_PRIORITY) t.priority = Thread.NORM_PRIORITY
+                t
+            }
+        }
     }
 
     val tokenFile = File("./config/token.txt")
@@ -42,31 +60,33 @@ class TDLightClient(
     private val mode: String = if (isUserMode) "user" else "bot"
 
     init {
-        if (tokenFile.exists()) {
-            token = tokenFile.readText()
-        } else {
-            handleLogin()
+        if (token == null) {
+            if (tokenFile.exists()) {
+                    token = tokenFile.readText()
+            } else {
+                if (isUserMode) handleLogin()
+                else throw RuntimeException("Not found token.")
+            }
         }
         val ping = sendSync(Ping())
         log.info("Ping $ping")
-        if (!ping.ok) throw Exception("Login failed.")
     }
 
-    fun <T> send(request: Request<T>, timeout: Duration? = null): CompletableFuture<T> {
+    fun <T> send(request: Request<ResponseWrapper<T>>, timeout: Duration? = null): CompletableFuture<T> {
         val uri = determineUri(request)
         if (isDebugEnabled) log.debug("Request to $uri")
 
-        return HttpClient.newHttpClient()
+        return HttpClient.newBuilder().executor(pool).build()
             .sendAsync(buildRequest(uri, request, timeout), HttpResponse.BodyHandlers.ofByteArray())
             .thenApplyAsync { response: HttpResponse<ByteArray> -> response.log() }
             .thenApply { response: HttpResponse<ByteArray> -> response.parse(request.responseType) }
     }
 
-    fun <T> sendSync(request: Request<T>, timeout: Duration? = null): T {
+    fun <T> sendSync(request: Request<ResponseWrapper<T>>, timeout: Duration? = null): T {
         val uri = determineUri(request)
         if (isDebugEnabled) log.debug("Request to $uri")
 
-        return HttpClient.newHttpClient()
+        return HttpClient.newBuilder().executor(pool).build()
             .send(buildRequest(uri, request, timeout), HttpResponse.BodyHandlers.ofByteArray())
             .log()
             .parse(request.responseType)
@@ -76,7 +96,7 @@ class TDLightClient(
         val httpRequest = HttpRequest.newBuilder()
         if (request.httpMethod == HttpMethod.POST) {
             if (request is MediaRequest) {
-                multiPartBodyPublisher(convertToMap(request))?.let { multiPartBodyPublisher ->
+                multiPartBodyPublisher(MAPPER.valueToTree(request))?.let { multiPartBodyPublisher ->
                     httpRequest
                         .header("Content-Type", "multipart/form-data; charset=utf-8; boundary=${multiPartBodyPublisher.boundary}")
                         .POST(multiPartBodyPublisher.build())
@@ -97,50 +117,81 @@ class TDLightClient(
         return httpRequest.uri(uri).build()
     }
 
-    private fun multiPartBodyPublisher(data: Map<Any, Any?>): MultiPartBodyPublisher? {
-        if (data.isEmpty()) return null
+    private fun multiPartBodyPublisher(data: JsonNode): MultiPartBodyPublisher? {
+        if (data.isEmpty) return null
 
         val multiPartBodyPublisher = MultiPartBodyPublisher()
-        for (entry in data.entries) {
-            entry.value?.let { value ->
-                if (value is LinkedHashMap<*, *> && value.containsKey("attach_name")) {
-                    val file = MAPPER.convertValue(value, InputFile::class.java)
-                    if (file.file != null) {
-                        multiPartBodyPublisher.addFile(entry.key.toString(), file.file!!.toPath())
-                    } else if (file.inputStream != null) {
-                        multiPartBodyPublisher.addFile(entry.key.toString(), { file.inputStream!! }, file.fileName, file.mimeType)
-                    } else {
-                        multiPartBodyPublisher.addPart(entry.key.toString(), file.attachName)
+        for (field in data.fields()) {
+            field.value?.let { node ->
+                if (node.has("attach_name")) {
+                    val file = MAPPER.treeToValue(node, InputFile::class.java)
+                    handleInputFile(field.key, file, multiPartBodyPublisher)
+                } else if (field.key == "media" && node.isArray) {
+                    val medias = ArrayList<HashMap<String, Any>>()
+                    when (node[0]["type"].textValue()) {
+                        InputMediaType.PHOTO -> {
+                            val files = MAPPER.convertValue(node, object : TypeReference<List<InputMediaPhoto>>() {})
+                            for (file in files) {
+                                val map = MAPPER.convertValue(file, object : TypeReference<HashMap<String, Any>>() {})
+                                file.media.handleMedia(map, multiPartBodyPublisher)
+                                medias.add(map)
+                            }
+                        }
+                        InputMediaType.VIDEO -> {
+                            val files = MAPPER.convertValue(node, object : TypeReference<List<InputMediaVideo>>() {})
+                            for (file in files) {
+                                val map = MAPPER.convertValue(file, object : TypeReference<HashMap<String, Any>>() {})
+                                file.media.handleMedia(map, multiPartBodyPublisher)
+                                file.thumb.handleThumb(map, multiPartBodyPublisher)
+                                medias.add(map)
+                            }
+                        }
+                        InputMediaType.ANIMATION -> {
+                            val files = MAPPER.convertValue(node, object : TypeReference<List<InputMediaAnimation>>() {})
+                            for (file in files) {
+                                val map = MAPPER.convertValue(file, object : TypeReference<HashMap<String, Any>>() {})
+                                file.media.handleMedia(map, multiPartBodyPublisher)
+                                file.thumb.handleThumb(map, multiPartBodyPublisher)
+                                medias.add(map)
+                            }
+                        }
+                        InputMediaType.AUDIO -> {
+                            val files = MAPPER.convertValue(node, object : TypeReference<List<InputMediaAudio>>() {})
+                            for (file in files) {
+                                val map = MAPPER.convertValue(file, object : TypeReference<HashMap<String, Any>>() {})
+                                file.media.handleMedia(map, multiPartBodyPublisher)
+                                file.thumb.handleThumb(map, multiPartBodyPublisher)
+                                medias.add(map)
+                            }
+                        }
+                        InputMediaType.DOCUMENT -> {
+                            val files = MAPPER.convertValue(node, object : TypeReference<List<InputMediaDocument>>() {})
+                            for (file in files) {
+                                val map = MAPPER.convertValue(file, object : TypeReference<HashMap<String, Any>>() {})
+                                file.media.handleMedia(map, multiPartBodyPublisher)
+                                file.thumb.handleThumb(map, multiPartBodyPublisher)
+                                medias.add(map)
+                            }
+                        }
+                        else -> {}
                     }
+                    multiPartBodyPublisher.addPart(field.key, MAPPER.writeValueAsString(medias))
                 } else {
-                    multiPartBodyPublisher.addPart(entry.key.toString(), entry.value.toString())
+                    multiPartBodyPublisher.addPart(field.key, field.value.textValue())
                 }
             }
         }
         return multiPartBodyPublisher
     }
 
-    fun prepareMultipartData(data: Map<Any, Any?>, boundary: String): BodyPublisher? {
-        val byteArrays = ArrayList<ByteArray>()
-        val separator = "--$boundary\r\nContent-Disposition: form-data; name=".encodeToByteArray()
-        for (entry in data.entries) {
-            entry.value?.let { value ->
-                byteArrays.add(separator)
-                if (value is LinkedHashMap<*, *> && value.containsKey("attach_name")) {
-                    val file = MAPPER.convertValue(value, InputFile::class.java)
-                    byteArrays.add("\"${entry.key}\"; filename=\"${file.fileName}\"\r\nContent-Type: ${file.mimeType}\r\n\r\n".encodeToByteArray())
-                    byteArrays.add(Files.readAllBytes(file.file!!.toPath()))
-                    byteArrays.add("\r\n".encodeToByteArray())
-                } else {
-                    byteArrays.add("\"${entry.key}\"\r\n\r\n${entry.value}\r\n".encodeToByteArray())
-                }
-            }
+    private fun handleInputFile(key: String, inputFile: InputFile, publisher: MultiPartBodyPublisher) {
+        if (inputFile.file != null) {
+            publisher.addFile(key, inputFile.file!!.toPath())
+        } else if (inputFile.inputStream != null) {
+            publisher.addFile(key, { inputFile.inputStream!! }, inputFile.fileName, inputFile.mimeType)
+        } else {
+            publisher.addPart(key, inputFile.attachName)
         }
-        byteArrays.add("--$boundary--".encodeToByteArray())
-        if (isDebugEnabled) {
-            printDebugMultipartData(byteArrays)
-        }
-        return HttpRequest.BodyPublishers.ofByteArrays(byteArrays)
     }
 
     private fun determineUri(request: Request<*>): URI {
@@ -173,11 +224,11 @@ class TDLightClient(
         println("phone:")
         val phone = readLine()!!
         val res = sendSync(UserLogin(phone))
-        log.info("State: {}", res.result)
-        token = "user${res.result!!.token}"
+        log.info("State: {}", res)
+        token = "user${res.token}"
         log.info("Token $token")
         tokenFile.writeText(token!!)
-        var state = res.result.authorizationState
+        var state = res.authorizationState
         while (state != AuthorizationStateType.READY) {
             state = when (state) {
                 AuthorizationStateType.WAIT_CODE -> {
@@ -193,9 +244,24 @@ class TDLightClient(
                 else -> {
                     throw Exception("login error")
                 }
-            }.also { log.info("State: $it") }.result!!.authorizationState
+            }.also { log.info("State: $it") }.authorizationState
         }
         tokenFile.writeText(token!!)
+    }
+
+    private fun InputFile.handleMedia(map: HashMap<String, Any>, multiPartBodyPublisher: MultiPartBodyPublisher) {
+        this.fileName?.also {
+            map["fileName"] = it
+            handleInputFile(it, this, multiPartBodyPublisher)
+        } ?: this.attachName
+        map["media"] = this.attachName
+    }
+
+    private fun InputFile?.handleThumb(map: HashMap<String, Any>, multiPartBodyPublisher: MultiPartBodyPublisher) {
+        this?.fileName?.also {
+            handleInputFile(it, this, multiPartBodyPublisher)
+        } ?: this?.attachName
+        this?.attachName?.let { map["thumb"] = it }
     }
 
 }

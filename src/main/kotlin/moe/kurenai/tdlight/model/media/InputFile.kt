@@ -11,6 +11,7 @@ class InputFile {
     var mimeType: String? = null
     var inputStream: InputStream? = null
     var file: File? = null
+    var isNew: Boolean = false
 
     constructor()
 
@@ -23,6 +24,7 @@ class InputFile {
         this.file = file
         this.fileName = file.name
         this.mimeType = mimeType ?: Files.probeContentType(file.toPath())
+        this.isNew = true
     }
 
     constructor(inputStream: InputStream, fileName: String, mimeType: String? = null) {
@@ -31,6 +33,7 @@ class InputFile {
         this.fileName = fileName
         this.mimeType = mimeType
         this.file = null
+        this.isNew = true
     }
 
     companion object {

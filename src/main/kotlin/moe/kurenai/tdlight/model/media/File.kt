@@ -1,8 +1,6 @@
 package moe.kurenai.tdlight.model.media
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.OptionalLong
-import java.util.Optional
 
 data class File(
 
@@ -11,11 +9,15 @@ data class File(
 
     @JsonProperty("file_unique_id")
     val fileUniqueId: String,
+) {
 
     @JsonProperty("file_size")
-    val fileSize: Long? = null,
+    var fileSize: Long? = null
 
     @JsonProperty("file_path")
-    val filePath: String? = null,
-) {
+    var filePath: String? = null
+
+    fun getFileUrl(token: String, isUserMode: Boolean = false): String {
+        return "https://api.telegram.org/file/${if (isUserMode) "user" else "bot" }${token}/${filePath}"
+    }
 }

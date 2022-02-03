@@ -1,8 +1,10 @@
 package moe.kurenai.tdlight.model.chat
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.annotation.NoArg
 import moe.kurenai.tdlight.model.message.Message
 
+@NoArg
 data class Chat(
 
     @JsonProperty("id")
@@ -65,4 +67,10 @@ data class Chat(
     @JsonProperty("location")
     val location: ChatLocation? = null,
 ) {
+
+    fun isUserChat() = type == ChatType.PRIVATE
+    fun isGroupChat() = type == ChatType.GROUP
+    fun isSupperGroupChat() = type == ChatType.SUPERGROUP
+    fun isChannelChat() = type == ChatType.CHANNEL
+
 }

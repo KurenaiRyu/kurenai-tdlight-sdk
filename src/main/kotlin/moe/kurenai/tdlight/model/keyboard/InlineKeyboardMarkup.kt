@@ -1,12 +1,13 @@
 package moe.kurenai.tdlight.model.keyboard
 
-import moe.kurenai.tdlight.model.message.ReplyMarkup
 import com.fasterxml.jackson.annotation.JsonProperty
-import moe.kurenai.tdlight.model.keyboard.InlineKeyboardButton
+import moe.kurenai.tdlight.annotation.NoArg
+import moe.kurenai.tdlight.model.message.ReplyMarkup
 
+@NoArg
 data class InlineKeyboardMarkup(
 
     @JsonProperty("inline_keyboard")
-    val inlineKeyboard: List<List<InlineKeyboardButton>>? = null
+    var inlineKeyboard: List<List<InlineKeyboardButton>>? = null
 ) : ReplyMarkup {
 }

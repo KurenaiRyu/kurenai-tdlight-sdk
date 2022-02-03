@@ -1,8 +1,10 @@
 package moe.kurenai.tdlight.model.message
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.Optional
+import moe.kurenai.tdlight.annotation.NoArg
+import java.util.*
 
+@NoArg
 data class LoginUrl(
 
     @JsonProperty("url")

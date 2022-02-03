@@ -1,27 +1,27 @@
 package moe.kurenai.tdlight.model.media
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.Optional
-import moe.kurenai.tdlight.model.media.PhotoSize
-import java.util.OptionalInt
-import moe.kurenai.tdlight.model.chat.ChatMember
+import moe.kurenai.tdlight.annotation.NoArg
 
-class Document {
+@NoArg
+class Document(
+
     @JsonProperty("file_id")
-    var file_id: String? = null
+    var fileId: String,
 
     @JsonProperty("file_unique_id")
-    var fileUniqueId: String? = null
+    var fileUniqueId: String,
+) {
 
     @JsonProperty("thumb")
-    var thumb: Optional<PhotoSize>? = null
+    var thumb: PhotoSize? = null
 
     @JsonProperty("file_name")
-    var fileName: Optional<String>? = null
+    var fileName: String? = null
 
     @JsonProperty("mime_type")
-    var mimeType: Optional<String>? = null
+    var mimeType: String? = null
 
     @JsonProperty("file_size")
-    var fileSize: OptionalInt? = null
+    var fileSize: Int? = null
 }

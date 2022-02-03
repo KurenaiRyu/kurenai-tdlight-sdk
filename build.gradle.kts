@@ -1,6 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.noarg.gradle.NoArgExtension
 
 plugins {
+    id("org.jetbrains.kotlin.plugin.noarg") version "1.6.10"
     kotlin("jvm") version "1.6.10"
     `maven-publish`
 }
@@ -38,12 +40,20 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+configure<NoArgExtension> {
+    annotation("moe.kurenai.tdlight.annotation.NoArg")
+}
+
 tasks.test {
     useJUnit()
 }
 
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "17"
+}
+
+java {
+    withSourcesJar()
 }
 
 publishing {

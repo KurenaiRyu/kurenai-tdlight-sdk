@@ -1,6 +1,7 @@
 package moe.kurenai.tdlight.model.message
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.annotation.NoArg
 import moe.kurenai.tdlight.model.chat.Chat
 import moe.kurenai.tdlight.model.keyboard.InlineKeyboardMarkup
 import moe.kurenai.tdlight.model.media.*
@@ -10,8 +11,9 @@ import moe.kurenai.tdlight.model.voice.VoiceChatEnded
 import moe.kurenai.tdlight.model.voice.VoiceChatParticipantsInvited
 import moe.kurenai.tdlight.model.voice.VoiceChatScheduled
 
+@NoArg
 data class Message(
-    @JsonProperty("message_id") val messageId: Long? = null,
+    @JsonProperty("message_id") val messageId: Int? = null,
     @JsonProperty("from") val from: User? = null,
     @JsonProperty("sender_chat") val senderChat: Chat? = null,
     @JsonProperty("date") val date: Long,
@@ -67,6 +69,8 @@ data class Message(
     @JsonProperty("voice_chat_participants_invited") val voiceChatParticipantsInvited: VoiceChatParticipantsInvited? = null,
     @JsonProperty("reply_markup") val replyMarkup: InlineKeyboardMarkup? = null
 ) {
+    val chatId = chat.id.toString()
+
     init {
         if (text != null && text.isNotBlank() && entities != null && entities.isNotEmpty()) {
             entities.forEach { entity ->
@@ -85,6 +89,7 @@ data class Message(
     fun hasDocument() = document != null
     fun hasVideo() = video != null
     fun hasVoice() = voice != null
+    fun hasAudio() = audio != null
     fun hasPhoto() = photo != null
     fun hasSticker() = sticker != null
     fun hasReplyMarkup() = replyMarkup != null
@@ -94,4 +99,9 @@ data class Message(
         }
         return false
     }
+    fun isReply(): Boolean = replyToMessage != null
+    fun isUserMessage(): Boolean = chat.isUserChat()
+    fun isGroupMessage(): Boolean = chat.isGroupChat()
+    fun isSuperGroupMessage(): Boolean = chat.isSupperGroupChat()
+    fun isChannelMessage(): Boolean = chat.isChannelChat()
 }

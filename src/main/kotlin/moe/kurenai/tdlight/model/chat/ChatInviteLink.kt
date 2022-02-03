@@ -1,8 +1,10 @@
 package moe.kurenai.tdlight.model.chat
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.annotation.NoArg
 import moe.kurenai.tdlight.model.message.User
 
+@NoArg
 data class ChatInviteLink(
 
     @JsonProperty("invite_link")

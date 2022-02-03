@@ -4,7 +4,7 @@ import moe.kurenai.tdlight.model.message.MessageEntity
 
 interface WithCaption : Parseable {
 
-    val caption: String?
-    val captionEntities: MessageEntity?
+    var caption: String?
+    var captionEntities: List<MessageEntity>?
 
 }

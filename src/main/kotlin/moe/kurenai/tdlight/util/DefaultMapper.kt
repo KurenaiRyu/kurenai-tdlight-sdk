@@ -7,6 +7,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
+import moe.kurenai.tdlight.exception.TelegramApiRequestException
+import moe.kurenai.tdlight.model.ResponseWrapper
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
 import java.net.http.HttpResponse
@@ -24,16 +26,6 @@ object DefaultMapper{
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
         .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
-
-    val MAPPER_WITH_ALL: ObjectMapper = jsonMapper {
-        addModules(kotlinModule(), Jdk8Module(), JavaTimeModule())
-    }
-        .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
-        .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-        .setSerializationInclusion(JsonInclude.Include.ALWAYS)
-
 
     fun <T> convertToString(t: T): String {
         return try {
@@ -55,19 +47,17 @@ object DefaultMapper{
         map.computeIfPresent(keyName) { _: Any, _: Any -> convertToString(t) }
     }
 
-    fun <T> parseResponse(response: ByteArray, reference: TypeReference<T>): T {
-        return try {
-            MAPPER.readValue(response, reference)
+    fun <T> parseResponse(bytes: ByteArray, reference: TypeReference<ResponseWrapper<T>>): T {
+        try {
+            val result = MAPPER.readValue(bytes, reference)
+            if (result.ok) return result.result!!
+            else throw TelegramApiRequestException("Client request error: [${result.errorCode}]${result.description}", result)
         } catch (e: IOException) {
-            throw RuntimeException(e)
+            throw TelegramApiRequestException("Unable to deserialize response", e)
         }
     }
 
-    fun <T> convertToMap(t: T): Map<Any, Any?> {
-        return MAPPER_WITH_ALL.convertValue(t, object : TypeReference<Map<Any, Any?>>() {})
-    }
-
-    fun <T> HttpResponse<ByteArray>.parse(reference: TypeReference<T>): T {
+    fun <T> HttpResponse<ByteArray>.parse(reference: TypeReference<ResponseWrapper<T>>): T {
         return parseResponse(this.body(), reference)
     }
 }

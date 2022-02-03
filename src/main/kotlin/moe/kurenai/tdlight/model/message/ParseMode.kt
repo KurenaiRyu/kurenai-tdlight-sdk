@@ -1,5 +1,7 @@
 package moe.kurenai.tdlight.model.message
 
-enum class ParseMode {
-    MARKDOWN, MARKDOWN_V2, HTML
+object ParseMode {
+    const val MARKDOWN = "Markdown"
+    const val MARKDOWN_V2 = "MarkdownV2"
+    const val HTML = "HTML"
 }

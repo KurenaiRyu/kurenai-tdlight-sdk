@@ -5,6 +5,6 @@ import moe.kurenai.tdlight.model.message.MessageEntity
 interface WithText : Parseable {
 
     val text: String
-    val entities: MessageEntity?
+    val entities: List<MessageEntity>?
 
 }

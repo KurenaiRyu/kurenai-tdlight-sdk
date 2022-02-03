@@ -7,7 +7,6 @@ import moe.kurenai.tdlight.model.ResponseWrapper
 import moe.kurenai.tdlight.model.media.InputFile
 import moe.kurenai.tdlight.model.message.Message
 import moe.kurenai.tdlight.model.message.MessageEntity
-import moe.kurenai.tdlight.model.message.ParseMode
 import moe.kurenai.tdlight.model.message.ReplyMarkup
 import moe.kurenai.tdlight.request.MediaRequest
 import moe.kurenai.tdlight.request.Request
@@ -15,19 +14,19 @@ import moe.kurenai.tdlight.request.Request
 data class SendVideoNote(
     override val chatId: String,
     val videoNote: InputFile,
-    val duration: Long? = null,
-    val length: Long? = null,
-    val thumb: InputFile? = null,
-    val supportsStreaming: Boolean? = null,
-    override val parseMode: ParseMode? = null,
-    override var replyToMessageId: Long? = null,
-    override var allowSendingWithoutReply: Boolean? = null,
-    override val disableNotification: Boolean? = null,
-    override val sendAt: Long? = null,
-    override val caption: String? = null,
-    override val captionEntities: MessageEntity? = null,
-    override val replyMarkup: ReplyMarkup? = null,
 ) : Request<ResponseWrapper<Message>>(), SendMessageRequest, MediaRequest, Reply, WithCaption, WithReplyMarkup {
+    var duration: Long? = null
+    var length: Long? = null
+    var thumb: InputFile? = null
+    var supportsStreaming: Boolean? = null
+    override var parseMode: String? = null
+    override var replyToMessageId: Int? = null
+    override var allowSendingWithoutReply: Boolean? = null
+    override var disableNotification: Boolean? = null
+    override var sendAt: Long? = null
+    override var caption: String? = null
+    override var captionEntities: List<MessageEntity>? = null
+    override var replyMarkup: ReplyMarkup? = null
 
     @JsonIgnore
     override val method = "sendVideoNote"

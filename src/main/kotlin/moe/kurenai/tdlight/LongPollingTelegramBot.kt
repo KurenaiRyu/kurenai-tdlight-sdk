@@ -72,10 +72,9 @@ class LongPollingTelegramBot : TelegramBot {
                     } else {
                         GetUpdates(null, null, null, null)
                     }
-                    client.sendSync(request, Duration.ZERO).result?.let { updates ->
-                        updates.forEach(publisher::submit)
-                        handleLastUpdateId(updates.lastOrNull(), lastUpdate)
-                    }
+                    val updates = client.sendSync(request, Duration.ZERO)
+                    updates.forEach(publisher::submit)
+                    handleLastUpdateId(updates.lastOrNull(), lastUpdate)
                 } catch (e: Exception) {
                     log.error("Error on receive update", e)
                 }

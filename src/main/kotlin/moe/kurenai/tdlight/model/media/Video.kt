@@ -1,22 +1,16 @@
 package moe.kurenai.tdlight.model.media
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import moe.kurenai.tdlight.model.media.PhotoSize
-import java.util.Optional
-import moe.kurenai.tdlight.model.message.MessageEntity
-import moe.kurenai.tdlight.model.media.Animation
-import java.util.OptionalInt
-import moe.kurenai.tdlight.model.encrypt.EncryptedPassportElement
-import moe.kurenai.tdlight.model.encrypt.EncryptedCredentials
-import moe.kurenai.tdlight.model.media.ShippingAddress
-import moe.kurenai.tdlight.model.media.OrderInfo
+import moe.kurenai.tdlight.annotation.NoArg
 
-class Video {
+@NoArg
+class Video(
     @JsonProperty("file_id")
-    var file_id: String? = null
+    var fileId: String,
 
     @JsonProperty("file_unique_id")
-    var fileUniqueId: String? = null
+    var fileUniqueId: String,
+) {
 
     @JsonProperty("width")
     var width = 0
@@ -28,14 +22,14 @@ class Video {
     var duration = 0
 
     @JsonProperty("thumb")
-    var thumb: Optional<PhotoSize>? = null
+    var thumb: PhotoSize? = null
 
     @JsonProperty("file_name")
-    var fileName: Optional<String>? = null
+    var fileName: String? = null
 
     @JsonProperty("mime_type")
-    var mimeType: Optional<String>? = null
+    var mimeType: String? = null
 
     @JsonProperty("file_size")
-    var fileSize: OptionalInt? = null
+    var fileSize: Int? = null
 }

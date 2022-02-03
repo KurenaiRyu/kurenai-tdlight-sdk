@@ -1,11 +1,13 @@
 package moe.kurenai.tdlight.model.media
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.annotation.NoArg
 
+@NoArg
 data class Sticker(
 
     @JsonProperty("file_id")
-    val file_id: String,
+    val fileId: String,
 
     @JsonProperty("file_unique_id")
     val fileUniqueId: String,

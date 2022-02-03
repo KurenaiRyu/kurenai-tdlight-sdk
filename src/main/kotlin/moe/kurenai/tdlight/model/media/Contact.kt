@@ -1,11 +1,10 @@
 package moe.kurenai.tdlight.model.media
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.Optional
-import moe.kurenai.tdlight.model.media.PhotoSize
-import java.util.OptionalInt
-import moe.kurenai.tdlight.model.chat.ChatMember
+import moe.kurenai.tdlight.annotation.NoArg
+import java.util.*
 
+@NoArg
 class Contact {
     @JsonProperty("phone_number")
     var phoneNumber: String? = null

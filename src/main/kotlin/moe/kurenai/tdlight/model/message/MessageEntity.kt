@@ -2,27 +2,29 @@ package moe.kurenai.tdlight.model.message
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.annotation.NoArg
 
+@NoArg
 data class MessageEntity(
 
     @JsonProperty("type")
-    val type: MessageEntityType,
+    val type: String,
 
     @JsonProperty("offset")
     val offset: Int,
 
     @JsonProperty("length")
     val length: Int,
-
-    @JsonProperty("url")
-    val url: String? = null,
-
-    @JsonProperty("user")
-    val user: User? = null,
-
-    @JsonProperty("language")
-    val language: String? = null,
 ) {
     @JsonIgnore
-    lateinit var text: String
+    var text: String? = null
+
+    @JsonProperty("url")
+    var url: String? = null
+
+    @JsonProperty("user")
+    var user: User? = null
+
+    @JsonProperty("language")
+    var language: String? = null
 }

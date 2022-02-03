@@ -1,7 +1,9 @@
 package moe.kurenai.tdlight.model.message
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import moe.kurenai.tdlight.annotation.NoArg
 
+@NoArg
 data class ForceReply(
 
     @JsonProperty("force_reply")

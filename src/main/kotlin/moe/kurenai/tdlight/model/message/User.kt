@@ -1,8 +1,9 @@
 package moe.kurenai.tdlight.model.message
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.Optional
+import moe.kurenai.tdlight.annotation.NoArg
 
+@NoArg
 data class User(
 
     @JsonProperty("id")

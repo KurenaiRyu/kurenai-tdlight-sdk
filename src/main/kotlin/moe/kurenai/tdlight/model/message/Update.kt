@@ -25,6 +25,7 @@ data class Update(
     @JsonProperty("chat_member") val chatMember: ChatMemberUpdated?,
     @JsonProperty("chat_join_request") val chatJoinRequest: ChatJoinRequest?
 ) {
+
     fun hasCallbackQuery() = callbackQuery != null
     fun hasEditedMessage() = editedMessage != null
     fun hasMessage() = message != null
