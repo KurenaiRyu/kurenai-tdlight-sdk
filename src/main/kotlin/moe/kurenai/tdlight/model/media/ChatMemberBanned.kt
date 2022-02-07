@@ -1,21 +1,17 @@
 package moe.kurenai.tdlight.model.media
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.util.Optional
-import moe.kurenai.tdlight.model.media.PhotoSize
-import java.util.OptionalInt
 import moe.kurenai.tdlight.model.chat.ChatMember
 import moe.kurenai.tdlight.model.message.User
 
 data class ChatMemberBanned(
 
     @JsonProperty("status")
-    val status: String,
+    val status: String = "kicked",
 
     @JsonProperty("user")
     val user: User,
 
     @JsonProperty("until_date")
     val untilDate: Long = 0,
-) : ChatMember {
-}
+) : ChatMember
