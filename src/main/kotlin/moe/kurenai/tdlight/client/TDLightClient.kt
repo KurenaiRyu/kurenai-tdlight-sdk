@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Function
 
 class TDLightClient(
-    private val baseUrl: String,
+    private val baseUrl: String = "https://api.telegram.org",
     var token: String? = null,
     isUserMode: Boolean = true,
     private val clientPool: ExecutorService = defaultClientPool(),
