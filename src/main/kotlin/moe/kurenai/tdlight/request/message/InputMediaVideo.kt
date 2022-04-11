@@ -4,7 +4,7 @@ import moe.kurenai.tdlight.model.media.InputFile
 import moe.kurenai.tdlight.model.message.MessageEntity
 
 class InputMediaVideo(
-    val media: InputFile,
+    override val media: InputFile,
 ) : InputMedia, WithCaption{
     var duration: Long? = null
     var width: Int? = null

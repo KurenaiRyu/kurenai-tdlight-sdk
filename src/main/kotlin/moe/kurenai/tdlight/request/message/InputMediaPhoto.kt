@@ -4,7 +4,7 @@ import moe.kurenai.tdlight.model.media.InputFile
 import moe.kurenai.tdlight.model.message.MessageEntity
 
 class InputMediaPhoto(
-    val media: InputFile,
+    override val media: InputFile,
 ) : InputMedia, WithCaption {
 
     override var parseMode: String? = null

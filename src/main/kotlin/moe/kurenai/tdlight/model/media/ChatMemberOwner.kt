@@ -5,7 +5,7 @@ import moe.kurenai.tdlight.model.chat.ChatMember
 import moe.kurenai.tdlight.model.message.User
 import java.util.*
 
-class ChatMemberOwner : ChatMember {
+class ChatMemberOwner : ChatMember() {
     @JsonProperty("status")
     var status: String = "creator"
 

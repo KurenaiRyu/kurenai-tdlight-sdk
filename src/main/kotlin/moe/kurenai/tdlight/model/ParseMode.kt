@@ -1,4 +1,4 @@
-package moe.kurenai.tdlight.model.message
+package moe.kurenai.tdlight.model
 
 object ParseMode {
     const val MARKDOWN = "Markdown"

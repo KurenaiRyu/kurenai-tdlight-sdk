@@ -14,4 +14,4 @@ data class ChatMemberBanned(
 
     @JsonProperty("until_date")
     val untilDate: Long = 0,
-) : ChatMember
+) : ChatMember()

@@ -1,5 +1,9 @@
 package moe.kurenai.tdlight.model.chat
 
-enum class ChatType {
-    PRIVATE, GROUP, SUPERGROUP, CHANNEL
+object ChatType {
+    const val PRIVATE = "private"
+    const val GROUP = "group"
+    const val SUPERGROUP = "supergroup"
+    const val CHANNEL = "channel"
+    const val SENDER = "sender"
 }

@@ -1,9 +1,9 @@
-package moe.kurenai.tdlight.model.message
+package moe.kurenai.tdlight.model.inline
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import moe.kurenai.tdlight.annotation.NoArg
-import moe.kurenai.tdlight.model.chat.ChatType
 import moe.kurenai.tdlight.model.media.Location
+import moe.kurenai.tdlight.model.message.User
 
 @NoArg
 data class InlineQuery(
@@ -20,7 +20,7 @@ data class InlineQuery(
     var offset: String,
 
     @JsonProperty("chat_type")
-    var chatType: ChatType? = null,
+    var chatType: String,
 
     @JsonProperty("location")
     var location: Location? = null,

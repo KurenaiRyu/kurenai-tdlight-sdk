@@ -50,5 +50,5 @@ data class ChatMemberAdministrator(
 
     @JsonProperty("custom_title")
     val customTitle: String? = null,
-) : ChatMember {
+) : ChatMember() {
 }

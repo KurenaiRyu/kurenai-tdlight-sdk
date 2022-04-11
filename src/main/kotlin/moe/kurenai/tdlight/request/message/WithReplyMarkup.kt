@@ -1,6 +1,6 @@
 package moe.kurenai.tdlight.request.message
 
-import moe.kurenai.tdlight.model.message.ReplyMarkup
+import moe.kurenai.tdlight.model.ReplyMarkup
 
 interface WithReplyMarkup {
 

@@ -1,12 +1,13 @@
 package moe.kurenai.tdlight.client
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import moe.kurenai.tdlight.model.ResponseWrapper
 import moe.kurenai.tdlight.model.login.AuthorizationStateType
 import moe.kurenai.tdlight.model.media.InputFile
+import moe.kurenai.tdlight.model.message.User
+import moe.kurenai.tdlight.request.GetMe
 import moe.kurenai.tdlight.request.MediaRequest
-import moe.kurenai.tdlight.request.Ping
 import moe.kurenai.tdlight.request.Request
 import moe.kurenai.tdlight.request.login.AuthCode
 import moe.kurenai.tdlight.request.login.AuthPassword
@@ -28,18 +29,20 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Function
 
 class TDLightClient(
-    private val baseUrl: String = "https://api.telegram.org",
+    baseUrl: String = DEFAULT_BASE_URL,
     var token: String? = null,
     isUserMode: Boolean = true,
     private val clientPool: ExecutorService = defaultClientPool(),
     private val handlerPool: ExecutorService = defaultHandlerPool(),
-    private val isDebugEnabled: Boolean = true
+    private val isDebugEnabled: Boolean = true,
+    updateBaseUrl: String = baseUrl
 ) {
 
     companion object {
         private val log = LogManager.getLogger()
 
         private const val MAX_RETRY = 3
+        private const val DEFAULT_BASE_URL = "https://api.telegram.org"
 
         private fun defaultClientPool(): ThreadPoolExecutor {
             val number = AtomicInteger(0)
@@ -77,12 +80,18 @@ class TDLightClient(
     }
 
     val tokenFile = File("./config/token.txt")
+    var me: User
+    val baseUrl: String
+    val updateBaseUrl: String
 
     private val DEFAULT_TIMEOUT = Duration.ofSeconds(30)
     private val DEFAULT_MIME_TYPE = "application/json"
     private val mode: String = if (isUserMode) "user" else "bot"
 
     init {
+        this.baseUrl = resolveBaseUrl(baseUrl)
+        this.updateBaseUrl = resolveBaseUrl(updateBaseUrl)
+
         if (token == null) {
             if (tokenFile.exists()) {
                 token = tokenFile.readText()
@@ -91,12 +100,29 @@ class TDLightClient(
                 else throw RuntimeException("Not found token.")
             }
         }
-        val ping = sendSync(Ping())
-        log.info("Ping $ping")
+        me = sendSync(GetMe())
+
+        log.info("Login by ${me.firstName}${me.lastName?.let { " $it" } ?: ""} @${me.username}")
     }
 
-    fun <T> send(request: Request<ResponseWrapper<T>>, timeout: Duration? = null): CompletableFuture<T> {
-        val uri = determineUri(request)
+    private fun resolveBaseUrl(url: String): String {
+        return if (url == DEFAULT_BASE_URL) {
+            DEFAULT_BASE_URL
+        } else {
+            val uri = URI(url)
+            if (uri.host == "api.telegram.org") DEFAULT_BASE_URL
+            else if (uri.path == "/bot") url.replace("/bot", "")
+            else url
+        }
+    }
+
+
+    fun <T> send(
+        request: Request<ResponseWrapper<T>>,
+        timeout: Duration? = null,
+        baseUrl: String? = null
+    ): CompletableFuture<T> {
+        val uri = determineUri(request, baseUrl)
         if (isDebugEnabled) log.debug("Request to $uri")
 
         val client = HttpClient.newBuilder().executor(clientPool).build()
@@ -110,8 +136,8 @@ class TDLightClient(
             .thenApplyAsync({ response: HttpResponse<ByteArray> -> response.parse(request.responseType) }, handlerPool)
     }
 
-    fun <T> sendSync(request: Request<ResponseWrapper<T>>, timeout: Duration? = null): T {
-        val uri = determineUri(request)
+    fun <T> sendSync(request: Request<ResponseWrapper<T>>, timeout: Duration? = null, baseUrl: String? = null): T {
+        val uri = determineUri(request, baseUrl)
         if (isDebugEnabled) log.debug("Request to $uri")
 
         val client = HttpClient.newBuilder().executor(clientPool).build()
@@ -141,6 +167,7 @@ class TDLightClient(
                 .handleAsync({ r, t -> tryResend(client, request, handler, r, t, count + 1) }, handlerPool)
                 .thenCompose(Function.identity())
         } else if (throwable != null) {
+            log.error(throwable.message, throwable)
             CompletableFuture.failedFuture(throwable)
         } else {
             CompletableFuture.completedFuture(resp)
@@ -163,11 +190,14 @@ class TDLightClient(
         val httpRequest = HttpRequest.newBuilder()
         if (request.httpMethod == HttpMethod.POST) {
             if (request is MediaRequest) {
-                multiPartBodyPublisher(MAPPER.valueToTree(request))?.let { multiPartBodyPublisher ->
+                multiPartBodyPublisher(request)?.let { multiPartBodyPublisher ->
                     httpRequest
-                        .header("Content-Type", "multipart/form-data; charset=utf-8; boundary=${multiPartBodyPublisher.boundary}")
+                        .header(
+                            "Content-Type",
+                            "multipart/form-data; charset=utf-8; boundary=${multiPartBodyPublisher.boundary}"
+                        )
                         .POST(multiPartBodyPublisher.build())
-                    if (isDebugEnabled) printDebugMultipartData(multiPartBodyPublisher.getByteArras())
+//                    if (isDebugEnabled) printDebugMultipartData(multiPartBodyPublisher.getByteArras())
                 } ?: kotlin.run {
                     httpRequest
                         .header("Content-Type", DEFAULT_MIME_TYPE)
@@ -176,77 +206,70 @@ class TDLightClient(
             } else {
                 httpRequest
                     .header("Content-Type", DEFAULT_MIME_TYPE)
-                    .headers("Accept", DEFAULT_MIME_TYPE)
-                    .POST(HttpRequest.BodyPublishers.ofByteArray(convertToByteArray(request).also { printDebugMultipartData(listOf(it)) }))
+                    .headers(
+                        "Accept", DEFAULT_MIME_TYPE,
+                        "Keep-Alive", "timeout=${(timeout ?: DEFAULT_TIMEOUT).toSeconds() - 5}, max=1000"
+                    )
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(convertToByteArray(request).also {
+                        printDebugMultipartData(
+                            listOf(it)
+                        )
+                    }))
             }
         }
         if (timeout != Duration.ZERO) httpRequest.timeout(timeout ?: DEFAULT_TIMEOUT)
         return httpRequest.uri(uri).build()
     }
 
-    private fun multiPartBodyPublisher(data: JsonNode): MultiPartBodyPublisher? {
-        if (data.isEmpty) return null
+    private fun multiPartBodyPublisher(data: MediaRequest): MultiPartBodyPublisher? {
+        val fields = MAPPER.valueToTree<JsonNode>(data).fields()
+        if (!fields.hasNext()) return null
 
         val multiPartBodyPublisher = MultiPartBodyPublisher()
-        for (field in data.fields()) {
-            field.value?.let { node ->
-                if (node.has("attach_name")) {
-                    val file = MAPPER.treeToValue(node, InputFile::class.java)
-                    handleInputFile(field.key, file, multiPartBodyPublisher)
-                } else if (field.key == "media" && node.isArray) {
-                    val medias = ArrayList<HashMap<String, Any>>()
-                    when (node[0]["type"].textValue()) {
-                        InputMediaType.PHOTO -> {
-                            val files = MAPPER.convertValue(node, object : TypeReference<List<InputMediaPhoto>>() {})
-                            for (file in files) {
-                                val map = MAPPER.convertValue(file, object : TypeReference<HashMap<String, Any>>() {})
-                                file.media.handleMedia(map, multiPartBodyPublisher)
-                                medias.add(map)
-                            }
-                        }
-                        InputMediaType.VIDEO -> {
-                            val files = MAPPER.convertValue(node, object : TypeReference<List<InputMediaVideo>>() {})
-                            for (file in files) {
-                                val map = MAPPER.convertValue(file, object : TypeReference<HashMap<String, Any>>() {})
-                                file.media.handleMedia(map, multiPartBodyPublisher)
-                                file.thumb.handleThumb(map, multiPartBodyPublisher)
-                                medias.add(map)
-                            }
-                        }
-                        InputMediaType.ANIMATION -> {
-                            val files = MAPPER.convertValue(node, object : TypeReference<List<InputMediaAnimation>>() {})
-                            for (file in files) {
-                                val map = MAPPER.convertValue(file, object : TypeReference<HashMap<String, Any>>() {})
-                                file.media.handleMedia(map, multiPartBodyPublisher)
-                                file.thumb.handleThumb(map, multiPartBodyPublisher)
-                                medias.add(map)
-                            }
-                        }
-                        InputMediaType.AUDIO -> {
-                            val files = MAPPER.convertValue(node, object : TypeReference<List<InputMediaAudio>>() {})
-                            for (file in files) {
-                                val map = MAPPER.convertValue(file, object : TypeReference<HashMap<String, Any>>() {})
-                                file.media.handleMedia(map, multiPartBodyPublisher)
-                                file.thumb.handleThumb(map, multiPartBodyPublisher)
-                                medias.add(map)
-                            }
-                        }
-                        InputMediaType.DOCUMENT -> {
-                            val files = MAPPER.convertValue(node, object : TypeReference<List<InputMediaDocument>>() {})
-                            for (file in files) {
-                                val map = MAPPER.convertValue(file, object : TypeReference<HashMap<String, Any>>() {})
-                                file.media.handleMedia(map, multiPartBodyPublisher)
-                                file.thumb.handleThumb(map, multiPartBodyPublisher)
-                                medias.add(map)
-                            }
-                        }
-                        else -> {}
-                    }
-                    multiPartBodyPublisher.addPart(field.key, MAPPER.writeValueAsString(medias))
-                } else {
-                    multiPartBodyPublisher.addPart(field.key, field.value.textValue())
-                }
+
+        for (field in fields) {
+            multiPartBodyPublisher.addPart(field.key, field.value.textValue())
+        }
+
+        when (data) {
+            is SendAnimation -> {
+                handleInputFile("animation", data.animation, multiPartBodyPublisher)
+                multiPartBodyPublisher.addPart("filename", data.animation.fileName)
+                data.thumb?.let { handleInputFile("thumb", it, multiPartBodyPublisher) }
             }
+            is SendPhoto -> {
+                handleInputFile("photo", data.photo, multiPartBodyPublisher)
+                multiPartBodyPublisher.addPart("filename", data.photo.fileName)
+            }
+            is SendAudio -> {
+                handleInputFile("audio", data.audio, multiPartBodyPublisher)
+                multiPartBodyPublisher.addPart("filename", data.audio.fileName)
+            }
+            is SendDocument -> {
+                handleInputFile("document", data.document, multiPartBodyPublisher)
+                multiPartBodyPublisher.addPart("filename", data.document.fileName)
+                data.thumb?.let { handleInputFile("thumb", it, multiPartBodyPublisher) }
+            }
+            is SendVideo -> {
+                handleInputFile("video", data.video, multiPartBodyPublisher)
+                multiPartBodyPublisher.addPart("filename", data.video.fileName)
+                data.thumb?.let { handleInputFile("thumb", it, multiPartBodyPublisher) }
+            }
+            is SendVoice -> {
+                handleInputFile("voice", data.voice, multiPartBodyPublisher)
+                multiPartBodyPublisher.addPart("filename", data.voice.fileName)
+            }
+            is SendMediaGroup -> {
+                val list = ArrayList<HashMap<String, Any>>()
+                for (inputMedia in data.media!!) {
+                    val map = MAPPER.convertValue(inputMedia, jacksonTypeRef<HashMap<String, Any>>())
+                    map["type"] = inputMedia.type
+                    inputMedia.media.handleMedia(map, multiPartBodyPublisher)
+                    list.add(map)
+                }
+                multiPartBodyPublisher.addPart("media", MAPPER.writeValueAsString(list))
+            }
+
         }
         return multiPartBodyPublisher
     }
@@ -261,8 +284,9 @@ class TDLightClient(
         }
     }
 
-    private fun determineUri(request: Request<*>): URI {
-        return URI.create(if (request.needToken) "$baseUrl/$mode$token/${request.method}" else "$baseUrl/${request.method}")
+    private fun determineUri(request: Request<*>, baseUrl: String? = null): URI {
+        val url = baseUrl?.takeIf { it.isNotBlank() } ?: this.baseUrl
+        return URI.create(if (request.needToken) "$url/$mode$token/${request.method}" else "$url/${request.method}")
     }
 
     private fun printDebugMultipartData(byteArrays: Iterable<ByteArray>) {

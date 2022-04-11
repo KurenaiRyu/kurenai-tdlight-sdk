@@ -33,14 +33,18 @@ class LongPollingTelegramBot : TelegramBot {
     }
 
     private val executorService: ScheduledExecutorService
-    private var initialDelay = 1L
-    private var period = 1L
     private val publisher: SubmissionPublisher<Update>
     override val client: TDLightClient
+    val longPollingTimeout: Duration
     var status = true
 
-    constructor(subscribers: List<Subscriber<Update>>, client: TDLightClient) {
+    constructor(
+        subscribers: List<Subscriber<Update>>,
+        client: TDLightClient,
+        longPollingTimeout: Duration = Duration.ofSeconds(60)
+    ) {
         this.client = client
+        this.longPollingTimeout = longPollingTimeout
         this.executorService = Executors.newSingleThreadScheduledExecutor()
         this.publisher = SubmissionPublisher<Update>(defaultPublishPool(), Flow.defaultBufferSize())
         subscribers.forEach { subscriber: Subscriber<Update> -> publisher.subscribe(subscriber) }
@@ -52,8 +56,10 @@ class LongPollingTelegramBot : TelegramBot {
         client: TDLightClient,
         executorService: ScheduledExecutorService,
         publish: SubmissionPublisher<Update>,
+        longPollingTimeout: Duration = Duration.ofSeconds(60),
     ) {
         this.client = client
+        this.longPollingTimeout = longPollingTimeout
         this.executorService = executorService
         this.publisher = publish
         subscribers.forEach(Consumer { subscriber: Subscriber<Update> -> publisher.subscribe(subscriber) })
@@ -62,25 +68,26 @@ class LongPollingTelegramBot : TelegramBot {
 
     override fun subscribeToUpdate() {
         val lastUpdate = AtomicLong()
-        executorService.scheduleAtFixedRate(
+        executorService.scheduleWithFixedDelay(
             {
                 try {
                     val request: GetUpdates = if (lastUpdate.get() > 0) {
                         GetUpdates(
-                            lastUpdate.get(), null, null, null
+                            lastUpdate.get(), null, longPollingTimeout.toSeconds().toInt(), null
                         )
                     } else {
-                        GetUpdates(null, null, null, null)
+                        GetUpdates(null, null, longPollingTimeout.toSeconds().toInt(), null)
                     }
-                    val updates = client.sendSync(request, Duration.ZERO)
+                    val updates =
+                        client.sendSync(request, longPollingTimeout.plus(Duration.ofSeconds(10)), client.updateBaseUrl)
                     updates.forEach(publisher::submit)
                     handleLastUpdateId(updates.lastOrNull(), lastUpdate)
                 } catch (e: Exception) {
                     log.error("Error on receive update", e)
                 }
             },
-            initialDelay,
-            period,
+            5L,
+            1L,
             TimeUnit.SECONDS
         )
     }

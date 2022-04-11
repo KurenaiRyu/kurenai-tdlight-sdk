@@ -17,7 +17,8 @@ data class File(
     @JsonProperty("file_path")
     var filePath: String? = null
 
-    fun getFileUrl(token: String, isUserMode: Boolean = false): String {
-        return "https://api.telegram.org/file/${if (isUserMode) "user" else "bot" }${token}/${filePath}"
+    fun getFileUrl(token: String, isUserMode: Boolean = false, baseUrl: String? = null): String {
+        return if (baseUrl == null) "https://api.telegram.org/file/${if (isUserMode) "user" else "bot"}${token}/${filePath}"
+        else "$baseUrl/file/${if (isUserMode) "user" else "bot"}${token}/${filePath}"
     }
 }

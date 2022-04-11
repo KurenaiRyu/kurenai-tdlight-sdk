@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import moe.kurenai.tdlight.model.chat.ChatMember
 import moe.kurenai.tdlight.model.message.User
 
-class ChatMemberLeft : ChatMember {
+class ChatMemberLeft : ChatMember() {
     @JsonProperty("status")
     var status: String = "left"
 

@@ -2,6 +2,7 @@ package moe.kurenai.tdlight.model.message
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import moe.kurenai.tdlight.annotation.NoArg
+import moe.kurenai.tdlight.model.MessageEntityType
 import moe.kurenai.tdlight.model.chat.Chat
 import moe.kurenai.tdlight.model.keyboard.InlineKeyboardMarkup
 import moe.kurenai.tdlight.model.media.*
@@ -56,8 +57,8 @@ data class Message(
     @JsonProperty("group_chat_created") val groupChatCreated: Boolean? = null,
     @JsonProperty("supergroup_chat_created") val supergroupChatCreated: Boolean? = null,
     @JsonProperty("message_auto_delete_timer_changed") val messageAutoDeleteTimerChanged: MessageAutoDeleteTimerChanged? = null,
-    @JsonProperty("migrate_to_chat_id") val migrateToChatId: Int? = null,
-    @JsonProperty("migrate_from_chat_id") val migrateFromChatId: Int? = null,
+    @JsonProperty("migrate_to_chat_id") val migrateToChatId: Long? = null,
+    @JsonProperty("migrate_from_chat_id") val migrateFromChatId: Long? = null,
     @JsonProperty("pinned_message") val pinnedMessage: Message? = null,
     @JsonProperty("invoice") val invoice: Invoice? = null,
     @JsonProperty("successful_payment") val successfulPayment: SuccessfulPayment? = null,

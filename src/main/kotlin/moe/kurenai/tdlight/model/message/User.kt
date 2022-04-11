@@ -10,10 +10,10 @@ data class User(
     val id: Long,
 
     @JsonProperty("is_bot")
-    val isBot: Boolean,
+    val isBot: Boolean = false,
 
     @JsonProperty("first_name")
-    val firstName: String,
+    val firstName: String = "",
 
     @JsonProperty("last_name")
     val lastName: String? = null,

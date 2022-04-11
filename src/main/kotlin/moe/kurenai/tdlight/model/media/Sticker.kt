@@ -21,6 +21,9 @@ data class Sticker(
     @JsonProperty("is_animated")
     val isAnimated: Boolean,
 
+    @JsonProperty("is_video")
+    val isVideo: Boolean,
+
     @JsonProperty("thumb")
     val thumb: PhotoSize? = null,
 

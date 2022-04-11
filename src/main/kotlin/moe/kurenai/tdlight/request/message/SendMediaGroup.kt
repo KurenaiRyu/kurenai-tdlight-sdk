@@ -11,6 +11,7 @@ import moe.kurenai.tdlight.request.Request
 data class SendMediaGroup(
     override val chatId: String,
 ) : Request<ResponseWrapper<List<Message>>>(), SendMessageRequest, Reply, MediaRequest {
+    @JsonIgnore
     var media: List<InputMedia>? = null
     override var replyToMessageId: Int? = null
     override var allowSendingWithoutReply: Boolean? = null

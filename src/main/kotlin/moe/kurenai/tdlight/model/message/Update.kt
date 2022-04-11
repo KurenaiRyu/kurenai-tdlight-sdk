@@ -3,6 +3,7 @@ package moe.kurenai.tdlight.model.message
 import com.fasterxml.jackson.annotation.JsonProperty
 import moe.kurenai.tdlight.model.chat.ChatJoinRequest
 import moe.kurenai.tdlight.model.chat.ChatMemberUpdated
+import moe.kurenai.tdlight.model.inline.InlineQuery
 import moe.kurenai.tdlight.model.media.PreCheckoutQuery
 import moe.kurenai.tdlight.model.media.ShippingQuery
 import moe.kurenai.tdlight.model.poll.Poll

@@ -19,4 +19,5 @@ import moe.kurenai.tdlight.model.media.*
         JsonSubTypes.Type(value = ChatMemberBanned::class, name = "kicked")
     ]
 )
-interface ChatMember 
+abstract class ChatMember {
+}

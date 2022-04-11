@@ -4,7 +4,7 @@ import moe.kurenai.tdlight.model.media.InputFile
 import moe.kurenai.tdlight.model.message.MessageEntity
 
 class InputMediaAudio(
-    val media: InputFile,
+    override val media: InputFile,
 ) : InputMedia, WithCaption{
 
     var thumb: InputFile? = null

@@ -26,7 +26,7 @@ data class Poll(
     val isAnonymous: Boolean,
 
     @JsonProperty("type")
-    val type: PollType,
+    val type: String,
 
     @JsonProperty("allows_multiple_answers")
     val allowsMultipleAnswers: Boolean,
@@ -35,10 +35,10 @@ data class Poll(
     val correctOptionId: Int? = null,
 
     @JsonProperty("explanation")
-    val explanation: String,
+    val explanation: String?,
 
     @JsonProperty("explanation_entities")
-    val explanationEntities: List<MessageEntity>,
+    val explanationEntities: List<MessageEntity>?,
 
     @JsonProperty("open_period")
     val openPeriod: Int? = null,

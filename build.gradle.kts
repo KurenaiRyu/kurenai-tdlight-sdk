@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "moe.kurenai.tdlight"
-version = "0.0.1"
+version = "0.0.1-SNAPSHOT"
 
 repositories {
     mavenLocal()
@@ -58,10 +58,26 @@ java {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
-            // groupId = project.group
-            // artifactId = project.name
-            // version = project.version
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/KurenaiRyu/tdlight-sdk")
+                credentials {
+                    username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+                }
+            }
+        }
+
+//        create<MavenPublication>("maven") {
+//            // groupId = project.group
+//            // artifactId = project.name
+//            // version = project.version
+//            from(components["java"])
+//        }
+    }
+    publications {
+        register<MavenPublication>("gpr") {
             from(components["java"])
         }
     }

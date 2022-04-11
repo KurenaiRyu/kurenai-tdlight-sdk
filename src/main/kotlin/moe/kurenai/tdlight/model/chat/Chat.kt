@@ -11,7 +11,7 @@ data class Chat(
     val id: Long,
 
     @JsonProperty("type")
-    val type: ChatType,
+    val type: String,
 
     @JsonProperty("title")
     val title: String? = null,

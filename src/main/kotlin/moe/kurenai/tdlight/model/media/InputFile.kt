@@ -1,5 +1,6 @@
 package moe.kurenai.tdlight.model.media
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Files
@@ -9,6 +10,8 @@ class InputFile {
     lateinit var attachName: String
     var fileName: String? = null
     var mimeType: String? = null
+
+    @JsonIgnore
     var inputStream: InputStream? = null
     var file: File? = null
     var isNew: Boolean = false
