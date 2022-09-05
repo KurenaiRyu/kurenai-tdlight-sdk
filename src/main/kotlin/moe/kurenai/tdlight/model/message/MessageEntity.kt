@@ -8,13 +8,13 @@ import moe.kurenai.tdlight.annotation.NoArg
 data class MessageEntity(
 
     @JsonProperty("type")
-    val type: String,
+    var type: String,
 
     @JsonProperty("offset")
-    val offset: Int,
+    var offset: Int,
 
     @JsonProperty("length")
-    val length: Int,
+    var length: Int,
 ) {
     @JsonIgnore
     var text: String? = null

@@ -2,13 +2,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.noarg.gradle.NoArgExtension
 
 plugins {
-    id("org.jetbrains.kotlin.plugin.noarg") version "1.6.10"
-    kotlin("jvm") version "1.6.10"
+    id("org.jetbrains.kotlin.plugin.noarg") version "1.6.21"
+    kotlin("jvm") version "1.6.21"
     `maven-publish`
 }
 
 group = "moe.kurenai.tdlight"
-version = "0.0.1-SNAPSHOT"
+version = "0.1.0-SNAPSHOT"
 
 repositories {
     mavenLocal()
@@ -19,11 +19,13 @@ object Versions {
     const val jackson = "2.13.1"
     const val log4j = "2.17.1"
     const val disruptor = "3.4.4"
+    const val ktor = "2.1.0"
 }
 
 dependencies {
     api("org.jetbrains.kotlin", "kotlin-reflect")
     api("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
+    api("org.jetbrains.kotlinx", "atomicfu", "0.18.3")
 
     api("com.fasterxml.jackson.core:jackson-core:${Versions.jackson}")
     api("com.fasterxml.jackson.core:jackson-annotations:${Versions.jackson}")
@@ -31,6 +33,10 @@ dependencies {
     api("com.fasterxml.jackson.module:jackson-module-kotlin:${Versions.jackson}")
     api("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${Versions.jackson}")
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${Versions.jackson}")
+
+    api("io.ktor:ktor-client-core:${Versions.ktor}")
+    api("io.ktor:ktor-client-okhttp:${Versions.ktor}")
+    api("io.ktor:ktor-client-encoding:${Versions.ktor}")
 
     api("org.apache.logging.log4j:log4j-core:${Versions.log4j}")
     api("org.apache.logging.log4j:log4j-api:${Versions.log4j}")

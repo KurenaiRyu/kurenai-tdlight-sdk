@@ -18,6 +18,7 @@ import moe.kurenai.tdlight.util.DefaultMapper.convertToByteArray
 import moe.kurenai.tdlight.util.DefaultMapper.parse
 import moe.kurenai.tdlight.util.MultiPartBodyPublisher
 import org.apache.logging.log4j.LogManager
+import java.io.Closeable
 import java.io.File
 import java.net.URI
 import java.net.http.HttpClient
@@ -31,12 +32,12 @@ import java.util.function.Function
 class TDLightClient(
     baseUrl: String = DEFAULT_BASE_URL,
     var token: String? = null,
-    isUserMode: Boolean = true,
+    isUserMode: Boolean = false,
     private val clientPool: ExecutorService = defaultClientPool(),
     private val handlerPool: ExecutorService = defaultHandlerPool(),
     private val isDebugEnabled: Boolean = true,
     updateBaseUrl: String = baseUrl
-) {
+) : Closeable {
 
     companion object {
         private val log = LogManager.getLogger()
@@ -353,6 +354,11 @@ class TDLightClient(
             handleInputFile(it, this, multiPartBodyPublisher)
         } ?: this?.attachName
         this?.attachName?.let { map["thumb"] = it }
+    }
+
+    override fun close() {
+        clientPool.shutdown()
+        handlerPool.shutdown()
     }
 
 }
