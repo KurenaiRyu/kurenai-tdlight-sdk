@@ -6,7 +6,6 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
-import io.ktor.client.plugins.compression.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
@@ -54,10 +53,6 @@ class TDLightCoroutineClient(
     override var coroutineContext: CoroutineContext = CoroutineName("TDLightCoroutineClient")
 
     val client = HttpClient(OkHttp) {
-        install(ContentEncoding) {
-            deflate(1.0F)
-            gzip(0.9F)
-        }
         install(HttpRequestRetry) {
             maxRetries = MAX_RETRY
             retryOnExceptionOrServerErrors(maxRetries)

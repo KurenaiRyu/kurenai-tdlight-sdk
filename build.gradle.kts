@@ -36,7 +36,6 @@ dependencies {
 
     api("io.ktor:ktor-client-core:${Versions.ktor}")
     api("io.ktor:ktor-client-okhttp:${Versions.ktor}")
-    api("io.ktor:ktor-client-encoding:${Versions.ktor}")
 
     api("org.apache.logging.log4j:log4j-core:${Versions.log4j}")
     api("org.apache.logging.log4j:log4j-api:${Versions.log4j}")
