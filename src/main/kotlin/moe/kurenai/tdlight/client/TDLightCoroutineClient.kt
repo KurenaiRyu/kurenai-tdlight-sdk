@@ -154,7 +154,9 @@ class TDLightCoroutineClient(
         return if (!fields.hasNext()) null
         else formData {
             for (field in fields) {
-                append(field.key, field.value.textValue())
+                field.value.textValue()?.let {
+                    append(field.key, it)
+                }
             }
             when (request) {
                 is SendAnimation -> {
