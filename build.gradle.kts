@@ -19,7 +19,7 @@ object Versions {
     const val jackson = "2.13.1"
     const val log4j = "2.17.1"
     const val disruptor = "3.4.4"
-    const val ktor = "2.1.0"
+    const val ktor = "2.1.3"
 }
 
 dependencies {
