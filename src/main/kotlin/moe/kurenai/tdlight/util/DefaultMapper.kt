@@ -9,14 +9,11 @@ import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import moe.kurenai.tdlight.exception.TelegramApiRequestException
 import moe.kurenai.tdlight.model.ResponseWrapper
-import org.apache.logging.log4j.LogManager
 import java.io.IOException
 import java.net.http.HttpResponse
 
 
 object DefaultMapper{
-
-    private val log = LogManager.getLogger()
 
     val MAPPER: ObjectMapper = jsonMapper {
         addModules(kotlinModule(), Jdk8Module(), JavaTimeModule())

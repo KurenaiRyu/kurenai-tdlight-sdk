@@ -2,12 +2,12 @@ package moe.kurenai.tdlight
 
 import moe.kurenai.tdlight.model.message.Update
 import moe.kurenai.tdlight.util.DefaultMapper.convertToString
-import org.apache.logging.log4j.LogManager
+import moe.kurenai.tdlight.util.getLogger
 
 open class DefaultUpdateSubscriber : AbstractUpdateSubscriber() {
 
     companion object {
-        private val log = LogManager.getLogger()
+        private val log = getLogger()
     }
 
     override fun onSubscribe0() {

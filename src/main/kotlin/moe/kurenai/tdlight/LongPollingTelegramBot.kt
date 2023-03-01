@@ -3,7 +3,7 @@ package moe.kurenai.tdlight
 import moe.kurenai.tdlight.client.TDLightClient
 import moe.kurenai.tdlight.model.message.Update
 import moe.kurenai.tdlight.request.chat.GetUpdates
-import org.apache.logging.log4j.LogManager
+import moe.kurenai.tdlight.util.getLogger
 import java.time.Duration
 import java.util.concurrent.*
 import java.util.concurrent.Flow.Subscriber
@@ -13,7 +13,7 @@ import java.util.function.Consumer
 class LongPollingTelegramBot : TelegramBot {
 
     companion object {
-        private val log = LogManager.getLogger()
+        private val log = getLogger()
 
         private fun defaultPublishPool(): ThreadPoolExecutor {
             return ThreadPoolExecutor(

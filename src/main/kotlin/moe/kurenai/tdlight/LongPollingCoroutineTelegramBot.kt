@@ -9,7 +9,7 @@ import moe.kurenai.tdlight.model.message.Update
 import moe.kurenai.tdlight.model.message.User
 import moe.kurenai.tdlight.request.chat.GetUpdates
 import moe.kurenai.tdlight.util.CoroutineUtil.childScopeContext
-import org.apache.logging.log4j.LogManager
+import moe.kurenai.tdlight.util.getLogger
 import java.time.Duration
 import java.util.concurrent.*
 import java.util.concurrent.Flow.Subscriber
@@ -27,7 +27,7 @@ class LongPollingCoroutineTelegramBot(
 ) : TelegramCoroutineBot {
 
     companion object {
-        private val log = LogManager.getLogger()
+        private val log = getLogger()
 
         private fun defaultPublishPool(): ThreadPoolExecutor {
             return ThreadPoolExecutor(
@@ -57,7 +57,7 @@ class LongPollingCoroutineTelegramBot(
                 kotlin.runCatching {
                     client.close()
                 }.onFailure {
-                    if (it !is CancellationException) log.error(it)
+                    if (it !is CancellationException) log.error(it.message, it)
                 }
             }
         }

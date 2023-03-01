@@ -17,7 +17,7 @@ import moe.kurenai.tdlight.util.DefaultMapper.MAPPER
 import moe.kurenai.tdlight.util.DefaultMapper.convertToByteArray
 import moe.kurenai.tdlight.util.DefaultMapper.parse
 import moe.kurenai.tdlight.util.MultiPartBodyPublisher
-import org.apache.logging.log4j.LogManager
+import moe.kurenai.tdlight.util.getLogger
 import java.io.Closeable
 import java.io.File
 import java.net.URI
@@ -40,7 +40,7 @@ class TDLightClient(
 ) : Closeable {
 
     companion object {
-        private val log = LogManager.getLogger()
+        private val log = getLogger()
 
         private const val MAX_RETRY = 3
         private const val DEFAULT_BASE_URL = "https://api.telegram.org"

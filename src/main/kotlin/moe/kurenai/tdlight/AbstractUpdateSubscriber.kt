@@ -1,15 +1,10 @@
 package moe.kurenai.tdlight
 
 import moe.kurenai.tdlight.model.message.Update
-import org.apache.logging.log4j.LogManager
 import java.util.concurrent.Flow
 import java.util.concurrent.Flow.Subscriber
 
 abstract class AbstractUpdateSubscriber : Subscriber<Update> {
-
-    companion object {
-        private val log = LogManager.getLogger()
-    }
 
     private var subscription: Flow.Subscription? = null
     override fun onSubscribe(subscription: Flow.Subscription) {

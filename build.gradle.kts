@@ -37,11 +37,6 @@ dependencies {
     api("io.ktor:ktor-client-core:${Versions.ktor}")
     api("io.ktor:ktor-client-okhttp:${Versions.ktor}")
 
-    api("org.apache.logging.log4j:log4j-core:${Versions.log4j}")
-    api("org.apache.logging.log4j:log4j-api:${Versions.log4j}")
-
-    api("com.lmax:disruptor:${Versions.disruptor}")
-
     testImplementation(kotlin("test"))
 }
 
@@ -58,6 +53,7 @@ tasks.withType<KotlinCompile>() {
 }
 
 java {
+    withJavadocJar()
     withSourcesJar()
 }
 
