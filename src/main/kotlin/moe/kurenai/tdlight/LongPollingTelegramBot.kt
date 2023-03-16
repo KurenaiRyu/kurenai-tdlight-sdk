@@ -34,6 +34,7 @@ class LongPollingTelegramBot : TelegramBot {
 
     private val executorService: ScheduledExecutorService
     private val publisher: SubmissionPublisher<Update>
+    private var defaultOffset: Long = -1
     override val client: TDLightClient
     val longPollingTimeout: Duration
     var status = true
@@ -41,10 +42,12 @@ class LongPollingTelegramBot : TelegramBot {
     constructor(
         subscribers: List<Subscriber<Update>>,
         client: TDLightClient,
-        longPollingTimeout: Duration = Duration.ofSeconds(60)
+        longPollingTimeout: Duration = Duration.ofSeconds(60),
+        defaultOffset: Long = -1,
     ) {
         this.client = client
         this.longPollingTimeout = longPollingTimeout
+        this.defaultOffset = defaultOffset
         this.executorService = Executors.newSingleThreadScheduledExecutor()
         this.publisher = SubmissionPublisher<Update>(defaultPublishPool(), Flow.defaultBufferSize())
         subscribers.forEach { subscriber: Subscriber<Update> -> publisher.subscribe(subscriber) }
@@ -57,9 +60,11 @@ class LongPollingTelegramBot : TelegramBot {
         executorService: ScheduledExecutorService,
         publish: SubmissionPublisher<Update>,
         longPollingTimeout: Duration = Duration.ofSeconds(60),
+        defaultOffset: Long = -1,
     ) {
         this.client = client
         this.longPollingTimeout = longPollingTimeout
+        this.defaultOffset = defaultOffset
         this.executorService = executorService
         this.publisher = publish
         subscribers.forEach(Consumer { subscriber: Subscriber<Update> -> publisher.subscribe(subscriber) })
@@ -76,7 +81,7 @@ class LongPollingTelegramBot : TelegramBot {
                             lastUpdate.get(), null, longPollingTimeout.toSeconds().toInt(), null
                         )
                     } else {
-                        GetUpdates(null, null, longPollingTimeout.toSeconds().toInt(), null)
+                        GetUpdates(defaultOffset, null, longPollingTimeout.toSeconds().toInt(), null)
                     }
                     val updates =
                         client.sendSync(request, longPollingTimeout.plus(Duration.ofSeconds(10)), client.updateBaseUrl)
