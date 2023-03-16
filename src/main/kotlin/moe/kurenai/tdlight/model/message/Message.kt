@@ -15,6 +15,7 @@ import moe.kurenai.tdlight.model.voice.VoiceChatScheduled
 @NoArg
 data class Message(
     @JsonProperty("message_id") val messageId: Int? = null,
+    @JsonProperty("message_thread_id") val messageThreadId: Int? = null,
     @JsonProperty("from") val from: User? = null,
     @JsonProperty("sender_chat") val senderChat: Chat? = null,
     @JsonProperty("date") val date: Long,
@@ -44,6 +45,7 @@ data class Message(
     @JsonProperty("voice") val voice: Voice? = null,
     @JsonProperty("caption") val caption: String? = null,
     @JsonProperty("caption_entities") val captionEntities: List<MessageEntity>? = null,
+    @JsonProperty("has_media_spoiler") val hasMediaSpoiler: Boolean = false,
     @JsonProperty("contact") val contact: Contact? = null,
     @JsonProperty("dice") val dice: Dice? = null,
     @JsonProperty("game") val game: Game? = null,
