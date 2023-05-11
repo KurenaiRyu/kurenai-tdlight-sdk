@@ -29,7 +29,7 @@ class GetMyCommands(
 ) : Request<ResponseWrapper<List<BotCommand>>>() {
 
     @JsonIgnore
-    override val method = "setMyCommands"
+    override val method = "getMyCommands"
 
     @JsonIgnore
     override val responseType = object : TypeReference<ResponseWrapper<List<BotCommand>>>() {}

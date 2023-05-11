@@ -17,7 +17,7 @@ class SetMyCommands(
     /**
      * A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.
      */
-    val command: List<BotCommand>,
+    val commands: List<BotCommand>,
     /**
      * A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to BotCommandScopeDefault.
      */

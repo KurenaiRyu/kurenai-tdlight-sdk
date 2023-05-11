@@ -37,6 +37,13 @@ dependencies {
     api("io.ktor:ktor-client-core:${Versions.ktor}")
     api("io.ktor:ktor-client-okhttp:${Versions.ktor}")
 
+    //logging
+    val log4j = "2.20.0"
+    testImplementation("org.apache.logging.log4j:log4j-core:$log4j")
+    testImplementation("org.apache.logging.log4j:log4j-api:$log4j")
+    testImplementation("org.apache.logging.log4j:log4j-slf4j2-impl:$log4j")
+    testImplementation("com.lmax:disruptor:3.4.4")
+
     testImplementation(kotlin("test"))
 }
 
