@@ -24,7 +24,7 @@ data class SendVideo(
     var thumb: InputFile? = null
     var supportsStreaming: Boolean? = null
     override var parseMode: String? = null
-    override var replyToMessageId: Int? = null
+    override var replyToMessageId: Long? = null
     override var allowSendingWithoutReply: Boolean? = null
     override var disableNotification: Boolean? = null
     override var sendAt: Long? = null

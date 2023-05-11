@@ -13,7 +13,7 @@ data class EditMessageCaption(
 ) : Request<ResponseWrapper<Message>>(), EditMessageRequest, WithCaption {
 
     override var chatId: String? = null
-    override var messageId: Int? = null
+    override var messageId: Long? = null
     override var inlineMessageId: String? = null
 
     override var captionEntities: List<MessageEntity>? = null

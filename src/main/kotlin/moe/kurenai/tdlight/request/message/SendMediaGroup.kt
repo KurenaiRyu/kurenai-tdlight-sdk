@@ -13,7 +13,7 @@ data class SendMediaGroup(
 ) : Request<ResponseWrapper<List<Message>>>(), SendMessageRequest, Reply, MediaRequest {
     @JsonIgnore
     var media: List<InputMedia>? = null
-    override var replyToMessageId: Int? = null
+    override var replyToMessageId: Long? = null
     override var allowSendingWithoutReply: Boolean? = null
     override var disableNotification: Boolean? = null
     override var sendAt: Long? = null

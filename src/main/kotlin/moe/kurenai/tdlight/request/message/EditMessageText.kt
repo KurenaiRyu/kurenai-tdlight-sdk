@@ -16,7 +16,7 @@ data class EditMessageText(
     var disableWebPagePreview: Boolean? = null
     override var parseMode: String? = null
     override var chatId: String? = null
-    override var messageId: Int? = null
+    override var messageId: Long? = null
     override var inlineMessageId: String? = null
 
     override var entities: List<MessageEntity>? = null

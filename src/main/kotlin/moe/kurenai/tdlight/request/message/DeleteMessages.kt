@@ -8,8 +8,8 @@ import moe.kurenai.tdlight.request.Request
 
 data class DeleteMessages(
     val chatId: String,
-    val start: Int,
-    val end: Int,
+    val start: Long,
+    val end: Long,
 ) : Request<ResponseWrapper<Boolean>>() {
 
     @JsonIgnore

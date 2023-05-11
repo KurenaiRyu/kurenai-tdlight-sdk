@@ -16,7 +16,7 @@ class SendPhoto(
     @JsonIgnore
     val photo: InputFile,
 ) : Request<ResponseWrapper<Message>>(), SendMessageRequest, MediaRequest, Reply, WithCaption, WithReplyMarkup {
-    override var replyToMessageId: Int? = null
+    override var replyToMessageId: Long? = null
     override var allowSendingWithoutReply: Boolean? = null
     override var caption: String? = null
     override var captionEntities: List<MessageEntity>? = null

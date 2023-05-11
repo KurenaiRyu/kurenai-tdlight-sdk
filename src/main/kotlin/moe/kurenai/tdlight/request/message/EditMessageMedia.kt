@@ -13,7 +13,7 @@ data class EditMessageMedia(
     val media: InputFile,
     val disableWebPagePreview: Boolean? = null,
     override val chatId: String? = null,
-    override val messageId: Int? = null,
+    override val messageId: Long? = null,
     override val inlineMessageId: String? = null,
 ) : Request<ResponseWrapper<Message>>(), EditMessageRequest, MediaRequest {
 

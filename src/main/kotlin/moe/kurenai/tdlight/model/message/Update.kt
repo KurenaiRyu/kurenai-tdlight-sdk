@@ -15,6 +15,7 @@ data class Update(
     @JsonProperty("edited_message") val editedMessage: Message?,
     @JsonProperty("channel_post") val channelPost: Message?,
     @JsonProperty("edited_channel_post") val editedChannelPost: Message?,
+    @JsonProperty("deleted_messages") val deletedMessages: DeletedMessage?,
     @JsonProperty("inline_query") val inlineQuery: InlineQuery?,
     @JsonProperty("chosen_inline_result") val chosenInlineResult: ChosenInlineResult?,
     @JsonProperty("callback_query") val callbackQuery: CallbackQuery?,

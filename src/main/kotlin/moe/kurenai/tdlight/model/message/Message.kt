@@ -1,7 +1,6 @@
 package moe.kurenai.tdlight.model.message
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import moe.kurenai.tdlight.annotation.NoArg
 import moe.kurenai.tdlight.model.MessageEntityType
 import moe.kurenai.tdlight.model.chat.Chat
 import moe.kurenai.tdlight.model.keyboard.InlineKeyboardMarkup
@@ -12,9 +11,8 @@ import moe.kurenai.tdlight.model.voice.VoiceChatEnded
 import moe.kurenai.tdlight.model.voice.VoiceChatParticipantsInvited
 import moe.kurenai.tdlight.model.voice.VoiceChatScheduled
 
-@NoArg
 data class Message(
-    @JsonProperty("message_id") val messageId: Int? = null,
+    @JsonProperty("message_id") val messageId: Long? = null,
     @JsonProperty("message_thread_id") val messageThreadId: Int? = null,
     @JsonProperty("from") val from: User? = null,
     @JsonProperty("sender_chat") val senderChat: Chat? = null,
@@ -75,12 +73,12 @@ data class Message(
     val chatId = chat.id.toString()
 
     init {
-        if (text != null && text.isNotBlank() && entities != null && entities.isNotEmpty()) {
+        if (!text.isNullOrBlank() && !entities.isNullOrEmpty()) {
             entities.forEach { entity ->
                 entity.text = text.substring(entity.offset, entity.offset + entity.length)
             }
         }
-        if (caption != null && caption.isNotBlank() && captionEntities != null && captionEntities.isNotEmpty()) {
+        if (!caption.isNullOrBlank() && !captionEntities.isNullOrEmpty()) {
             captionEntities.forEach { entity ->
                 entity.text = caption.substring(entity.offset, entity.offset + entity.length)
             }

@@ -9,7 +9,7 @@ import moe.kurenai.tdlight.request.Request
 
 data class GetMessageInfo(
     val chatId: String,
-    val messageId: Int,
+    val messageId: Long,
 ) : Request<ResponseWrapper<Message>>() {
 
     @JsonIgnore

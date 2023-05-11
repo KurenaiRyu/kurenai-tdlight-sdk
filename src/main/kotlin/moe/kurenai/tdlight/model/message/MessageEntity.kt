@@ -2,9 +2,7 @@ package moe.kurenai.tdlight.model.message
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import moe.kurenai.tdlight.annotation.NoArg
 
-@NoArg
 data class MessageEntity(
 
     @JsonProperty("type")

@@ -14,7 +14,7 @@ data class CopyMessage(
     val fromChatId: String,
     val messageId: Long,
 ) : Request<ResponseWrapper<Message>>(), SendMessageRequest, WithCaption, Reply, WithReplyMarkup {
-    override var replyToMessageId: Int? = null
+    override var replyToMessageId: Long? = null
     override var allowSendingWithoutReply: Boolean? = null
     override var caption: String? = null
     override var captionEntities: List<MessageEntity>? = null
