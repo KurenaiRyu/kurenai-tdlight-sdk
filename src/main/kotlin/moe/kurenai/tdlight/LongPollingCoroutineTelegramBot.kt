@@ -24,7 +24,7 @@ class LongPollingCoroutineTelegramBot(
         Flow.defaultBufferSize()
     ),
     private val longPollingTimeout: Duration = Duration.ofSeconds(60),
-    private var defaultOffset: Long? = -1,
+    private var defaultOffset: Long = -1,
 ) : TelegramCoroutineBot {
 
     companion object {
@@ -88,8 +88,12 @@ class LongPollingCoroutineTelegramBot(
                             lastUpdate.value, null, longPollingTimeout.toSeconds().toInt(), null
                         )
                     } else {
-                        GetUpdates(defaultOffset, null, longPollingTimeout.toSeconds().toInt(), null).also {
-                            defaultOffset = null
+                        if (0 > defaultOffset) {
+                            GetUpdates(defaultOffset, 1, longPollingTimeout.toSeconds().toInt(), null)
+                            defaultOffset *= -1
+                            GetUpdates(null, null, longPollingTimeout.toSeconds().toInt(), null)
+                        } else {
+                            GetUpdates(null, null, longPollingTimeout.toSeconds().toInt(), null)
                         }
                     }
                     val updates =

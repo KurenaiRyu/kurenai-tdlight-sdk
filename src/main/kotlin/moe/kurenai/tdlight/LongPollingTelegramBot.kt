@@ -34,7 +34,7 @@ class LongPollingTelegramBot : TelegramBot {
 
     private val executorService: ScheduledExecutorService
     private val publisher: SubmissionPublisher<Update>
-    private var defaultOffset: Long? = -1
+    private var defaultOffset: Long = -1
     override val client: TDLightClient
     val longPollingTimeout: Duration
     var status = true
@@ -81,8 +81,12 @@ class LongPollingTelegramBot : TelegramBot {
                             lastUpdate.get(), null, longPollingTimeout.toSeconds().toInt(), null
                         )
                     } else {
-                        GetUpdates(defaultOffset, null, longPollingTimeout.toSeconds().toInt(), null).also {
-                            defaultOffset = null
+                        if (0 > defaultOffset) {
+                            GetUpdates(defaultOffset, 1, longPollingTimeout.toSeconds().toInt(), null)
+                            defaultOffset *= -1
+                            GetUpdates(null, null, longPollingTimeout.toSeconds().toInt(), null)
+                        } else {
+                            GetUpdates(null, null, longPollingTimeout.toSeconds().toInt(), null)
                         }
                     }
                     val updates =
