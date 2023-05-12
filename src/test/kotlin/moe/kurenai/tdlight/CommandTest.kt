@@ -4,6 +4,7 @@ import moe.kurenai.tdlight.client.TDLightClient
 import moe.kurenai.tdlight.model.command.BotCommand
 import moe.kurenai.tdlight.request.command.GetMyCommands
 import moe.kurenai.tdlight.request.command.SetMyCommands
+import moe.kurenai.tdlight.util.TestUtil.client
 import moe.kurenai.tdlight.util.getProp
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -14,8 +15,6 @@ import kotlin.test.assertEquals
  */
 
 class CommandTest {
-
-    val client: TDLightClient by lazy { TDLightClient(token = getProp("telegram.token")) }
 
     @Test
     fun testGetCommand() {
